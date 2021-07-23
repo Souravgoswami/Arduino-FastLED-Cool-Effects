@@ -3,10 +3,20 @@ Combines cool FastLED effects of arduino, that's available by clicking the inter
 
 This code tested on both an Arduino Uno and Arduino Nano.
 
-The configuration in both of these boards will look like the following:
+# Setup:
+To setup, you need the following parts:
+1. 1xArduino Uno / Nano.
+2. A chain of WS2811 fully addressable RGB LED. You can tweak the number in the Code.
+3. Some wires.
+4. 1x10KΩ Resistor.
+5. A momentary push button.
+
+You then need to connect the parts in the following way:
 
 ![WS2811](https://raw.githubusercontent.com/Souravgoswami/Arduino-FastLED-Cool-Effects/master/images/circuit.svg)
 
 After you are done, upload the sketch to arduino, no extra tweaking needed!
 
 To change LED modes, press the momentary switch button!
+
+You can use a different external power supply for the LED, while the arduino runs on another. In that case, the + and - will connect to the external power supply, and the ground (-) should be attached to the arduino ground \[the + should only go to the LED, it shouldn't touch the arudino].
