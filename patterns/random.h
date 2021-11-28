@@ -4,7 +4,7 @@ void generateRandomColours(unsigned long *ary) {
 		unsigned long green = rand() & 255 ;
 		unsigned long blue = rand() & 255 ;
 
-		unsigned long colour = blue + (256 * green) + (256L * 256L * red) ;
+		unsigned long colour = (red << 16) + (green << 8) + blue ;
 		ary[i] = colour ;
 	}
 }
