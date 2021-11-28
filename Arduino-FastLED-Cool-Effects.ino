@@ -100,7 +100,7 @@ unsigned long brightColours[] = {
 const unsigned char brightColoursLen = sizeof(brightColours) / sizeof(brightColours[0]) ;
 
 void loop() {
-	if (design == 0 || design < 5) {
+	if (design < 6) {
 		if (!randomColoursSet) {
 			randomColoursSet = 1 ;
 			arrayShuffle(brightColours, brightColoursLen) ;
