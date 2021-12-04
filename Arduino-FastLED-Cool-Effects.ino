@@ -1,4 +1,5 @@
 #pragma GCC optimize("Os")
+
 #include "FastLED.h"
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3001000)
@@ -55,7 +56,7 @@ const bool    kMatrixVertical = false;
 
 CRGB leds[NUM_LEDS] ;
 
-#include "patterns/arrayFunctions.h"
+#include "functions/arrayFunctions.h"
 
 #include "patterns/pride.h"
 #include "patterns/cylon.h"
@@ -74,9 +75,11 @@ void setup() {
 	// Button press event
 	attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonPushEvent, CHANGE) ;
 
- 	delay(2000);
+ 	delay(2000) ;
 
  	Serial.begin(57600) ;
+
+ 	srand(analogRead(A0)) ;
 
 	FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS)
 		.setCorrection(TypicalLEDStrip)
@@ -99,8 +102,18 @@ unsigned long brightColours[] = {
 
 const unsigned char brightColoursLen = sizeof(brightColours) / sizeof(brightColours[0]) ;
 
+unsigned long leds_ary[NUM_LEDS] ;
+
 void loop() {
-	if (design < 6) {
+	if (design < 3) {
+		if (!randomColoursSet) {
+			randomColoursSet = 1 ;
+			arrayShuffleUniqColours(brightColours, brightColoursLen, leds_ary, NUM_LEDS) ;
+		}
+
+		// setBrightColours(brightColours, brightColoursLen) ;
+		setBrightColours(leds_ary, NUM_LEDS) ;
+	} else if (design < 6) {
 		if (!randomColoursSet) {
 			randomColoursSet = 1 ;
 			arrayShuffle(brightColours, brightColoursLen) ;

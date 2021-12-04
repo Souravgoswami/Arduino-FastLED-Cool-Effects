@@ -22,6 +22,33 @@ void arrayShuffle(unsigned long *ary, unsigned char length) {
 	}
 }
 
+// Reject previous colour in LED.
+// For example:
+//	Invalid: g - g - r - b - b - g
+//	Valid: g - r - b - r - b - g
+void arrayShuffleUniqColours(const unsigned long *target, unsigned char length, unsigned long *dest, unsigned char dest_length) {
+	if (length > 1) {
+		unsigned long newAry[length - 1] ;
+		unsigned long taken ;
+
+		taken = target[rand() % length] ;
+		dest[0] = taken ;
+
+		for(unsigned char i = 1 ; i < dest_length ; ++i) {
+			unsigned int k = 0 ;
+
+			for(unsigned char j = 0 ; j < length ; ++j) {
+				if (target[j] != taken) {
+					newAry[k++] = target[j] ;
+				}
+			}
+
+			taken = newAry[rand() % k] ;
+			dest[i] = taken ;
+		}
+	}
+}
+
 // void rotateColoursAnim(unsigned long *colours, unsigned char length) {
 // 	for(unsigned char i = 0 ; i < NUM_LEDS ; ++i) {
 // 		leds[i] = colours[0] ;
