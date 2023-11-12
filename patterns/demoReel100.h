@@ -1,3 +1,5 @@
+#define DEMO_REEL_FRAMES_PER_SECOND  120
+
 // List of patterns to cycle through.  Each is defined as a separate function below.
 unsigned char gCurrentPatternNumber = 0;
 unsigned char gHue = 0; // rotating "base color" used by many of the patterns

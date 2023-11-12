@@ -1,3 +1,8 @@
+const uint8_t kMatrixWidth = 10;
+const uint8_t kMatrixHeight = 5;
+const bool kMatrixSerpentineLayout = true;
+const bool kMatrixVertical = true;
+
 // Helper functions for an two-dimensional XY matrix of pixels.
 // Simple 2-D demo code is included as well.
 //
@@ -173,9 +178,9 @@ void xyMatrix() {
     int32_t xHueDelta32 = ((int32_t)cos16( ms * (39/1) ) * (310 / kMatrixHeight));
     DrawOneFrame( ms / 65536, yHueDelta32 / 32768, xHueDelta32 / 32768);
     if( ms < 5000 ) {
-      FastLED.setBrightness( scale8( BRIGHTNESS, (ms * 256) / 5000));
+      FastLED.setBrightness( scale8( ledData.brightness, (ms * 256) / 5000));
     } else {
-      FastLED.setBrightness(BRIGHTNESS);
+      FastLED.setBrightness(ledData.brightness);
     }
     FastLED.show();
 }
