@@ -3,20 +3,20 @@
 // by Mark Kriegsman
 // Minor Mods by Sourav Goswami (2021)
 
-void pride() {
+void pride(short numLED) {
 	uint8_t sat8, brightdepth, msmultiplier;
-	uint16_t brightnessthetainc16 ;
-	uint16_t hue16, hueinc16 ;
-	uint32_t ms, deltams ;
-	uint16_t b16, bri16 ;
-	uint8_t bri8 ;
-	uint8_t hue8 ;
-	uint16_t brightnesstheta16 ;
-	uint8_t i ;
+	uint16_t brightnessthetainc16;
+	uint16_t hue16, hueinc16;
+	uint32_t ms, deltams;
+	uint16_t b16, bri16;
+	uint8_t bri8;
+	uint8_t hue8;
+	uint16_t brightnesstheta16;
+	uint8_t i;
 
-	static uint32_t sPseudotime = 0 ;
-	static uint32_t sLastMillis = 0 ;
-	static uint16_t sHue16 = 0 ;
+	static uint32_t sPseudotime = 0;
+	static uint32_t sLastMillis = 0;
+	static uint16_t sHue16 = 0;
 
 	sat8 = beatsin88( 87, 220, 250);
 	brightdepth = beatsin88( 341, 96, 224);
@@ -27,23 +27,23 @@ void pride() {
 	hueinc16 = beatsin88(113, 1, 3000);
 
 	ms = millis();
-	deltams = ms - sLastMillis ;
-	sLastMillis  = ms ;
-	sPseudotime += deltams * msmultiplier ;
-	sHue16 += deltams * beatsin88(400, 5, 9) ;
-	brightnesstheta16 = sPseudotime ;
+	deltams = ms - sLastMillis;
+	sLastMillis  = ms;
+	sPseudotime += deltams * msmultiplier;
+	sHue16 += deltams * beatsin88(400, 5, 9);
+	brightnesstheta16 = sPseudotime;
 
-	for(i = 0 ; i < NUM_LEDS ; ++i) {
+	for(i = 0; i < numLED; ++i) {
 		hue16 += hueinc16;
-		hue8 = hue16 >> 8 ;
+		hue8 = hue16 >> 8;
 
 		brightnesstheta16  += brightnessthetainc16;
 		b16 = sin16(brightnesstheta16) + 32768;
 
-		bri16 = (uint32_t)((uint32_t)b16 * (uint32_t)b16) >> 16 ;
-		bri8 = ((uint32_t)(((uint32_t)bri16) * brightdepth) >> 16) + (255 - brightdepth) ;
+		bri16 = (uint32_t)((uint32_t)b16 * (uint32_t)b16) >> 16;
+		bri8 = ((uint32_t)(((uint32_t)bri16) * brightdepth) >> 16) + (255 - brightdepth);
 
-		nblend(leds[NUM_LEDS - 1 - i], (CRGB)CHSV(hue8, sat8, bri8), 128);
+		nblend(leds[numLED - 1 - i], (CRGB)CHSV(hue8, sat8, bri8), 128);
 	}
 
 	FastLED.show();

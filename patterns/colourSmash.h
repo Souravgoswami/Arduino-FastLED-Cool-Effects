@@ -1,33 +1,69 @@
 DEFINE_GRADIENT_PALETTE(brightHeatMap_gp_colourSmash) {
-  0x0, 0xff, 0x55, 0x55,
-  0x7f, 0x55, 0x55, 0xff,
-  0xbf, 0x3c, 0xe3, 0xb5,
-  0xff, 0xff, 0xff, 0x0,
-} ;
+  0x00, 0xff, 0x00, 0x00, // Red
+  0x20, 0xff, 0x14, 0x93, // Hot Pink
+  0x40, 0x00, 0x80, 0x80, // Teal
+  0x60, 0x00, 0xff, 0x00, // Green
+  0x80, 0xff, 0x00, 0xff, // Magenta
+  0xA0, 0xff, 0x8c, 0x00, // Orange
+  0xC0, 0xff, 0xff, 0x00, // Yellow
+  0xE0, 0x4b, 0x00, 0x82, // Indigo
+  0xff, 0x00, 0xff, 0xff  // Cyan
+};
 
-extern const CRGBPalette16 brightHeatMapColourSmash = brightHeatMap_gp_colourSmash ;
-unsigned int colourIndex[NUM_LEDS] ;
+DEFINE_GRADIENT_PALETTE(brightHeatMap_gp_colourSmash2) {
+  0x00, 0xff, 0x00, 0x00, // Red
+  0x10, 0xee, 0x82, 0xee, // Violet
+  0x20, 0xff, 0x8c, 0x00, // Dark Orange
+  0x40, 0x00, 0x80, 0x00, // Olive Green
+  0x50, 0x00, 0xbf, 0xff, // Deep Sky Blue
+  0x60, 0x00, 0xff, 0xff, // Aqua
+  0x70, 0x00, 0x64, 0x00, // Dark Green
+  0x80, 0xff, 0x00, 0xff, // Magenta
+  0x90, 0x8a, 0x2b, 0xe2, // Blue Violet
+  0xa0, 0xff, 0x45, 0x00, // Orange Red
+  0xb0, 0x7c, 0xfc, 0x00, // Lawn Green
+  0xc0, 0xad, 0xd8, 0xe6, // Light Blue
+  0xd0, 0xff, 0x14, 0x93, // Deep Pink
+  0xe0, 0xcd, 0x5c, 0x5c, // Indian Red
+  0xf0, 0x4b, 0x00, 0x82, // Indigo
+  0xff, 0x00, 0xff, 0xff  // Cyan
+};
 
-void initColourSmash() {
-  for (unsigned char i = 0 ; i < NUM_LEDS ; ++i) {
-    colourIndex[i] = random8() ;
+struct ColourSmashData {
+  bool colourSmashInitialized = false;
+  CRGBPalette16 brightHeatMapColourSmash = brightHeatMap_gp_colourSmash;
+  CRGBPalette16 brightHeatMapColourSmash2 = brightHeatMap_gp_colourSmash2;
+};
+
+struct ColourSmashData colourSmashData;
+
+void runColourSmash(CRGBPalette16 palette, unsigned short numLED, int everyNMilliseconds) {
+  unsigned int colourIndex[numLED];
+
+  if (!colourSmashData.colourSmashInitialized) {
+    for (unsigned int i = 0; i < numLED; ++i) {
+      colourIndex[i] = generateRandomBrightColour();
+    }
+    colourSmashData.colourSmashInitialized = true;
   }
-}
 
-void colourSmash() {
-  for (unsigned int i = 0 ; i < NUM_LEDS ; ++i) {
-    leds[i] = ColorFromPalette(brightHeatMapColourSmash, colourIndex[i], 0xff) ;
+  for (unsigned int i = 0; i < numLED; ++i) {
+    leds[i] = ColorFromPalette(palette, colourIndex[i], 0xff);
   }
 
-  EVERY_N_MILLISECONDS(5) {
-    for (unsigned int i = 0 ; i < NUM_LEDS ; ++i) {
-      if (colourIndex[i] == 0xff) {
-        colourIndex[i] = 0 ;
-      } else {
-        colourIndex[i]++ ;
-      }
+  EVERY_N_MILLISECONDS(everyNMilliseconds) {
+    for (unsigned int i = 0; i < numLED; ++i) {
+      colourIndex[i] = (colourIndex[i] + 1) % 256;
     }
   }
 
-  FastLED.show() ;
+  FastLED.show();
+}
+
+void colourSmash(short numLED) {
+  runColourSmash(colourSmashData.brightHeatMapColourSmash, numLED, 5);
+}
+
+void colourSmash2(short numLED) {
+  runColourSmash(colourSmashData.brightHeatMapColourSmash2, numLED, 20);
 }

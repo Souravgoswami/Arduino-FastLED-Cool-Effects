@@ -1,15 +1,19 @@
-#define FIRE2012_FRAMES_PER_SECOND 60
 // COOLING: How much does the air cool as it rises?
 // Less cooling = taller flames.  More cooling = shorter flames.
 // Default 50, suggested range 20-100
-#define COOLING  55
 
 // SPARKING: What chance (out of 255) is there that a new spark will be lit?
 // Higher chance = more roaring fire.  Lower chance = more flickery fire.
 // Default 120, suggested range 50-200.
-#define SPARKING 120
 
-bool gReverseDirection = false;
+struct Fire2012Data {
+  bool gReverseDirection = false;
+  unsigned short cooling =  55;
+  unsigned short fps = 60;
+  unsigned short sparking = 120;
+};
+
+Fire2012Data fire2012Data;
 
 // Fire2012 by Mark Kriegsman, July 2012
 // as part of "Five Elements" shown here: http://youtu.be/knWiGsmgycY
@@ -26,7 +30,7 @@ bool gReverseDirection = false;
 //
 // Temperature is in arbitrary units from 0 (cold black) to 255 (white hot).
 //
-// This simulation scales it self a bit depending on NUM_LEDS; it should look
+// This simulation scales it self a bit depending on numLEDs; it should look
 // "OK" on anywhere from 20 to 100 LEDs without too much tweaking.
 //
 // I recommend running this simulation at anywhere from 30-100 frames per second,
@@ -39,32 +43,32 @@ bool gReverseDirection = false;
 // feel of your fire: COOLING (used in step 1 above), and SPARKING (used
 // in step 3 above).
 
-void Fire2012() {
-// Array of temperature readings at each simulation cell
-  static byte heat[NUM_LEDS];
+static byte heat[MAX_LED_COUNT];
 
+void Fire2012(short numLEDs) {
+// Array of temperature readings at each simulation cell
    // Step 1.  Cool down every cell a little
-    for(unsigned char i = 0 ; i < NUM_LEDS ; i++) {
-      heat[i] = qsub8( heat[i],  random8(0, ((COOLING * 10) / NUM_LEDS) + 2));
+    for(unsigned char i = 0; i < numLEDs; i++) {
+      heat[i] = qsub8( heat[i],  random8(0, ((fire2012Data.cooling * 10) / numLEDs) + 2));
     }
 
     // Step 2.  Heat from each cell drifts 'up' and diffuses a little
-    for(unsigned char k= NUM_LEDS - 1; k >= 2 ; k--) {
+    for(unsigned char k= numLEDs - 1; k >= 2; k--) {
       heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2] ) / 3;
     }
 
     // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-    if( random8() < SPARKING ) {
+    if(random8() < fire2012Data.sparking) {
       int y = random8(7);
       heat[y] = qadd8( heat[y], random8(160,255) );
     }
 
     // Step 4.  Map from heat cells to LED colors
-    for(unsigned char j = 0; j < NUM_LEDS ; j++) {
+    for(unsigned char j = 0; j < numLEDs; j++) {
       CRGB color = HeatColor( heat[j]);
       int pixelnumber;
-      if( gReverseDirection ) {
-        pixelnumber = (NUM_LEDS-1) - j;
+      if(fire2012Data.gReverseDirection) {
+        pixelnumber = (numLEDs-1) - j;
       } else {
         pixelnumber = j;
       }
@@ -72,12 +76,12 @@ void Fire2012() {
     }
 }
 
-void fire2012() {
+void fire2012(short numLEDs) {
   // Add entropy to random number generator; we use a lot of it.
   // random16_add_entropy(random());
 
-  Fire2012();
+  Fire2012(numLEDs);
 
   FastLED.show();
-  FastLED.delay(1000 / FIRE2012_FRAMES_PER_SECOND);
+  FastLED.delay(1000 / fire2012Data.fps);
 }

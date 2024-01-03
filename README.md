@@ -13,7 +13,7 @@ To setup, you need the following parts:
 
 You then need to connect the parts in the following way:
 
-![WS2811](https://raw.githubusercontent.com/Souravgoswami/Arduino-FastLED-Cool-Effects/master/images/circuit.svg)
+![WS2811](https://raw.githubusercontent.com/Souravgoswami/Arduino-FastLED-Cool-Effects/master/images/circuit.jpg)
 
 After you are done, upload the sketch to arduino, no extra tweaking needed!
 
