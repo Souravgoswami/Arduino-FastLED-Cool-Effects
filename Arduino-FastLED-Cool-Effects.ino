@@ -37,15 +37,11 @@
   #define MAX_LED_COUNT 100
   #define CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN 7
   #define EEPROM_ADDRESS 0
+  CRGB leds[MAX_LED_COUNT];
 
   #include <EEPROM.h>
 #else
   #define MAX_LED_COUNT DEFAULT_LED_COUNT
-#endif
-
-#ifdef LED_CHAIN_TOGGLE_BUTTON
-  CRGB leds[MAX_LED_COUNT];
-#else
   CRGB leds[DEFAULT_LED_COUNT];
 #endif
 
@@ -105,26 +101,26 @@ LEDData ledData;
 #include "functions/arrayFunctions.h"
 #include "functions/randomBrightColour.h"
 
-#include "patterns/pride.h"
+#include "patterns/colourSmash.h"
 #include "patterns/cylon.h"
 #include "patterns/demoReel100.h"
 #include "patterns/fire2012.h"
-#include "patterns/xyMatrix.h"
-#include "patterns/random.h"
-#include "patterns/colourSmash.h"
-#include "patterns/radiantShimmer.h"
-#include "patterns/sinusoidalBeats.h"
-#include "patterns/sinusoidalBeatsWithBlur.h"
-#include "patterns/sinusoidalBeats2.h"
-#include "patterns/rainbow2.h"
-#include "patterns/rotatingRainbowHue.h"
-#include "patterns/rainbowSmash.h"
 #include "patterns/meteorRain.h"
-#include "patterns/rainbowFirework.h"
+#include "patterns/moveRainbowLight.h"
+#include "patterns/pride.h"
+#include "patterns/radiantShimmer.h"
+#include "patterns/rainbow2.h"
 #include "patterns/rainbowChasers.h"
+#include "patterns/rainbowFirework.h"
+#include "patterns/rainbowSmash.h"
 #include "patterns/rainbowWaterfall.h"
 #include "patterns/rainbowWaterfallHueRotate.h"
 #include "patterns/rainbowWave.h"
+#include "patterns/random.h"
+#include "patterns/rotatingRainbowHue.h"
+#include "patterns/sinusoidalBeats.h"
+#include "patterns/sinusoidalBeats2.h"
+#include "patterns/sinusoidalBeatsWithBlur.h"
 #include "patterns/staticFullChainRainbow.h"
 
 void buttonPushEvent() ;
@@ -297,123 +293,131 @@ void loop() {
     staticRainbowChase(leds, numLEDTotal);
     FastLED.show();
   } else if (ledData.design == 4) {
+    dynamicRainbowChase(leds, numLEDTotal);
+    FastLED.show();
+  } else if (ledData.design == 5) {
     rainbowWaterfall(30, 7, numLEDTotal);
     FastLED.show();
     FastLED.delay(30);
-  } else if (ledData.design == 5) {
-    dynamicRainbowChase(leds, numLEDTotal);
-    FastLED.show();
   } else if (ledData.design == 6) {
     rainbowWaterfallHueRotate(30, 7, numLEDTotal);
     FastLED.show();
     FastLED.delay(30);
   } else if (ledData.design == 7) {
-    staticFullChainRainbow(leds, numLEDTotal);
+    reverseRainbowWaterfall(30, 7, numLEDTotal);
     FastLED.show();
+    FastLED.delay(30);
   } else if (ledData.design == 8) {
-    staticFullChainRainbow(leds, numLEDTotal);
-    addGlitter(50, numLEDTotal);
+    reverseRainbowWaterfallHueRotate(30, 7, numLEDTotal);
     FastLED.show();
+    FastLED.delay(30);
   } else if (ledData.design == 9) {
-    rainbowWave(10, numLEDTotal);
+    moveRainbowLight(numLEDTotal, leds);
   } else if (ledData.design == 10) {
-    fill_rainbow(leds, numLEDTotal, 0, 7);
+    staticFullChainRainbow(leds, numLEDTotal);
     FastLED.show();
   } else if (ledData.design == 11) {
-    fill_rainbow(leds, numLEDTotal, 0, 7);
+    staticFullChainRainbow(leds, numLEDTotal);
     addGlitter(50, numLEDTotal);
     FastLED.show();
   } else if (ledData.design == 12) {
+    rainbowWave(10, numLEDTotal);
+  } else if (ledData.design == 13) {
+    fill_rainbow(leds, numLEDTotal, 0, 7);
+    FastLED.show();
+  } else if (ledData.design == 14) {
+    fill_rainbow(leds, numLEDTotal, 0, 7);
+    addGlitter(50, numLEDTotal);
+    FastLED.show();
+  } else if (ledData.design == 15) {
     rainbow2(numLEDTotal, 6);
     FastLED.show();
-  } else if (ledData.design == 13) {
+  } else if (ledData.design == 16) {
     rainbowSmash(numLEDTotal);
     FastLED.show();
     FastLED.delay(15);
-  } else if (ledData.design == 14) {
-    colourSmash(numLEDTotal);
-    FastLED.show();
-  } else if (ledData.design == 15) {
-    colourSmash2(numLEDTotal);
-    FastLED.show();
-  } else if (ledData.design == 16) {
-    colourSmash(numLEDTotal);
-    addGlitter(50, numLEDTotal);
-    FastLED.show();
   } else if (ledData.design == 17) {
-    colourSmash2(numLEDTotal);
-    addGlitter(50, numLEDTotal);
+    colourSmash(numLEDTotal);
     FastLED.show();
   } else if (ledData.design == 18) {
-    sinusoidalBeats(numLEDTotal);
+    colourSmash2(numLEDTotal);
     FastLED.show();
   } else if (ledData.design == 19) {
-    sinusoidalBeats(numLEDTotal);
+    colourSmash(numLEDTotal);
     addGlitter(50, numLEDTotal);
     FastLED.show();
   } else if (ledData.design == 20) {
-    sinusoidalBeatsWithBlur(numLEDTotal);
+    colourSmash2(numLEDTotal);
+    addGlitter(50, numLEDTotal);
+    FastLED.show();
   } else if (ledData.design == 21) {
-    sinusoidalBeats2(numLEDTotal);
+    sinusoidalBeats(numLEDTotal);
+    FastLED.show();
   } else if (ledData.design == 22) {
-    radiantShimmer(numLEDTotal);
+    sinusoidalBeats(numLEDTotal);
+    addGlitter(50, numLEDTotal);
     FastLED.show();
   } else if (ledData.design == 23) {
+    sinusoidalBeatsWithBlur(numLEDTotal);
+  } else if (ledData.design == 24) {
+    sinusoidalBeats2(numLEDTotal);
+  } else if (ledData.design == 25) {
+    radiantShimmer(numLEDTotal);
+    FastLED.show();
+  } else if (ledData.design == 26) {
     rotateBrightColoursSmooth(brightColours, brightColoursLen, numLEDTotal);
-  } else if (ledData.design == 24 || ledData.design == 25 || ledData.design == 26) {
+  } else if (ledData.design == 27 || ledData.design == 28 || ledData.design == 29) {
     if (!randomColoursSet) {
       randomColoursSet = true;
       arrayShuffleUniqColoursEffect(brightColours, brightColoursLen, leds, numLEDTotal);
     }
     FastLED.show();
-  } else if (ledData.design == 27) {
+  } else if (ledData.design == 30) {
       int meteorColourIndex = rand() % meteorColoursLen;
       uint32_t meteorColour = meteorColors[meteorColourIndex];
       meteorRain(meteorColour, numLEDTotal);
-  } else if (ledData.design == 28) {
-    pride(numLEDTotal);
-  } else if (ledData.design == 29) {
-    cylon(numLEDTotal);
-  } else if (ledData.design == 30) {
-    demoReel100(numLEDTotal);
   } else if (ledData.design == 31) {
-    fire2012(numLEDTotal);
+    pride(numLEDTotal);
   } else if (ledData.design == 32) {
-    xyMatrix(numLEDTotal);
+    cylon(numLEDTotal);
   } else if (ledData.design == 33) {
+    demoReel100(numLEDTotal);
+  } else if (ledData.design == 34) {
+    fire2012(numLEDTotal);
+  } else if (ledData.design == 35) {
     fill_solid(leds, numLEDTotal, 0xff5010);
     FastLED.show();
-  } else if (ledData.design == 34) {
+  } else if (ledData.design == 36) {
     fill_solid(leds, numLEDTotal, 0x008080);
     FastLED.show();
-  } else if (ledData.design == 35) {
+  } else if (ledData.design == 37) {
     fill_solid(leds, numLEDTotal, 0x32cd32);
     FastLED.show();
-  } else if (ledData.design == 36) {
+  } else if (ledData.design == 38) {
     fill_solid(leds, numLEDTotal, 0x00ffff);
     FastLED.show();
-  } else if (ledData.design == 37) {
+  } else if (ledData.design == 39) {
     fill_solid(leds, numLEDTotal, 0xff50d6);
     FastLED.show();
-  } else if (ledData.design == 38) {
+  } else if (ledData.design == 40) {
     fill_solid(leds, numLEDTotal, 0xff00ff);
     FastLED.show();
-  } else if (ledData.design == 39) {
+  } else if (ledData.design == 41) {
     fill_solid(leds, numLEDTotal, 0xffff00);
     FastLED.show();
-  } else if (ledData.design == 40) {
+  } else if (ledData.design == 42) {
     fill_solid(leds, numLEDTotal, 0xff2200);
     FastLED.show();
-  } else if (ledData.design == 41) {
+  } else if (ledData.design == 43) {
     fill_solid(leds, numLEDTotal, 0x00ff00);
     FastLED.show();
-  } else if (ledData.design == 42) {
+  } else if (ledData.design == 44) {
     fill_solid(leds, numLEDTotal, 0x3ce3b4);
     FastLED.show();
-  } else if (ledData.design == 43) {
+  } else if (ledData.design == 45) {
     fill_solid(leds, numLEDTotal, 0xff0011);
     FastLED.show();
-  } else if (ledData.design == 44) {
+  } else if (ledData.design == 46) {
     rotateBrightColours(brightColours, brightColoursLen, numLEDTotal);
   } else {
     shutDown(10);
@@ -428,7 +432,7 @@ void buttonPushEvent() {
   if (millis() < prevPressTime) return;
 
   prevPressTime = millis() + BUTTON_MIN_DELAY;
-  design = (design + 1) % 46;
+  design = (design + 1) % 48;
   ledData.design = design;
 
   digitalWrite(BUTTON_PUSH_LED_INDICATOR_PIN, LED_ON);
