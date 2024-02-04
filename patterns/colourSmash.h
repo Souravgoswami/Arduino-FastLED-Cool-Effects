@@ -56,8 +56,6 @@ void runColourSmash(CRGBPalette16 palette, unsigned short numLED, int everyNMill
       colourIndex[i] = (colourIndex[i] + 1) % 256;
     }
   }
-
-  FastLED.show();
 }
 
 void colourSmash(short numLED) {

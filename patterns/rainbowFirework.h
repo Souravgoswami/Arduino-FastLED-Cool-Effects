@@ -9,7 +9,7 @@ void rainbowFirework(unsigned short numLEDs) {
   for (unsigned short i = 0; i < 256; i++) {
     fadeToBlackBy(leds, numLEDs, 1);
     FastLED.show();
-    delay(5);
+    FastLED.delay(5);
   }
 
   FastLED.clear();

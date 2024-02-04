@@ -2,8 +2,6 @@
 
 #include <Arduino.h>
 #include <FastLED.h>
-#include <EEPROM.h>
-#include <avr/wdt.h>
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3001000)
   #warning "Requires FastLED 3.1 or later; check github for latest code."
@@ -27,7 +25,6 @@
 // #define LED_ACTIVE_HIGH  // Uncomment this for common cathode RGB LEDs or active-high LEDs
 
 #define BUTTON_LED_TYPE_COMMON_ANODE
-
 #define BUTTON_PUSH_LED_INDICATOR_PIN 8
 
 // Uncomment / Comment the following line to enable / disable the ability to rotate between LED chain numbers
@@ -39,11 +36,12 @@
   #define LED_CHAIN_TOGGLE_BUTTON_PIN 3
   #define MAX_LED_COUNT 100
   #define CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN 7
+  #define EEPROM_ADDRESS 0
+
+  #include <EEPROM.h>
 #else
   #define MAX_LED_COUNT DEFAULT_LED_COUNT
 #endif
-
-#define EEPROM_ADDRESS 0
 
 #ifdef LED_CHAIN_TOGGLE_BUTTON
   CRGB leds[MAX_LED_COUNT];
@@ -65,6 +63,7 @@ volatile unsigned char design = 0;
 volatile bool randomColoursSet = false;
 volatile bool modeButtonPressed = false;
 volatile unsigned long long modeButtonActivatedTill = 0;
+volatile bool hasUpdatedOnButtonPress = false;
 
 #ifdef LED_CHAIN_TOGGLE_BUTTON
   volatile bool resetButtonPressed = false;
@@ -111,7 +110,6 @@ LEDData ledData;
 #include "patterns/demoReel100.h"
 #include "patterns/fire2012.h"
 #include "patterns/xyMatrix.h"
-#include "patterns/plainColour.h"
 #include "patterns/random.h"
 #include "patterns/colourSmash.h"
 #include "patterns/radiantShimmer.h"
@@ -123,6 +121,11 @@ LEDData ledData;
 #include "patterns/rainbowSmash.h"
 #include "patterns/meteorRain.h"
 #include "patterns/rainbowFirework.h"
+#include "patterns/rainbowChasers.h"
+#include "patterns/rainbowWaterfall.h"
+#include "patterns/rainbowWaterfallHueRotate.h"
+#include "patterns/rainbowWave.h"
+#include "patterns/staticFullChainRainbow.h"
 
 void buttonPushEvent() ;
 
@@ -166,7 +169,7 @@ void shutDown(int shutDownAnimDelay) {
   for (unsigned char i = 0; i < numLEDTotal; ++i) {
     leds[i] = (CRGB)0x0;
     FastLED.show();
-    delay(shutDownAnimDelay);
+    FastLED.delay(shutDownAnimDelay);
   }
 }
 
@@ -248,7 +251,10 @@ void setup() {
   FastLED.setBrightness(BRIGHTNESS);
 
   FastLED.clear();
-  showLEDCount(numLEDTotal);
+
+  #ifdef LED_CHAIN_TOGGLE_BUTTON
+    showLEDCount(numLEDTotal);
+  #endif
 }
 
 void loop() {
@@ -272,6 +278,10 @@ void loop() {
     digitalWrite(BUTTON_PUSH_LED_INDICATOR_PIN, LED_OFF);
   }
 
+  if (!hasUpdatedOnButtonPress) {
+    hasUpdatedOnButtonPress = true;
+  }
+
   if (ledData.design == 0) {
     rotatingRainbowHue(numLEDTotal);
     FastLED.delay(5);
@@ -284,87 +294,126 @@ void loop() {
   } else if (ledData.design == 2) {
     rainbowFirework(numLEDTotal);
   } else if (ledData.design == 3) {
-    fill_rainbow(leds, numLEDTotal, 0, 7);
+    staticRainbowChase(leds, numLEDTotal);
     FastLED.show();
   } else if (ledData.design == 4) {
+    rainbowWaterfall(30, 7, numLEDTotal);
+    FastLED.show();
+    FastLED.delay(30);
+  } else if (ledData.design == 5) {
+    dynamicRainbowChase(leds, numLEDTotal);
+    FastLED.show();
+  } else if (ledData.design == 6) {
+    rainbowWaterfallHueRotate(30, 7, numLEDTotal);
+    FastLED.show();
+    FastLED.delay(30);
+  } else if (ledData.design == 7) {
+    staticFullChainRainbow(leds, numLEDTotal);
+    FastLED.show();
+  } else if (ledData.design == 8) {
+    staticFullChainRainbow(leds, numLEDTotal);
+    addGlitter(50, numLEDTotal);
+    FastLED.show();
+  } else if (ledData.design == 9) {
+    rainbowWave(10, numLEDTotal);
+  } else if (ledData.design == 10) {
+    fill_rainbow(leds, numLEDTotal, 0, 7);
+    FastLED.show();
+  } else if (ledData.design == 11) {
     fill_rainbow(leds, numLEDTotal, 0, 7);
     addGlitter(50, numLEDTotal);
     FastLED.show();
-  } else if (ledData.design == 5) {
+  } else if (ledData.design == 12) {
     rainbow2(numLEDTotal, 6);
     FastLED.show();
-  } else if (ledData.design == 6) {
+  } else if (ledData.design == 13) {
     rainbowSmash(numLEDTotal);
     FastLED.show();
     FastLED.delay(15);
-  } else if (ledData.design == 7) {
-    colourSmash(numLEDTotal);
-  } else if (ledData.design == 8) {
-    colourSmash2(numLEDTotal);
-  } else if (ledData.design == 9) {
-    colourSmash(numLEDTotal);
-    addGlitter(50, numLEDTotal);
-  } else if (ledData.design == 10) {
-    colourSmash2(numLEDTotal);
-    addGlitter(50, numLEDTotal);
-  } else if (ledData.design == 11) {
-    sinusoidalBeats(numLEDTotal);
-    FastLED.show();
-  } else if (ledData.design == 12) {
-    sinusoidalBeats(numLEDTotal);
-    addGlitter(50, numLEDTotal);
-    FastLED.show();
-  } else if (ledData.design == 13) {
-    sinusoidalBeatsWithBlur(numLEDTotal);
   } else if (ledData.design == 14) {
-    sinusoidalBeats2(numLEDTotal);
+    colourSmash(numLEDTotal);
+    FastLED.show();
   } else if (ledData.design == 15) {
-    radiantShimmer(numLEDTotal);
+    colourSmash2(numLEDTotal);
     FastLED.show();
   } else if (ledData.design == 16) {
+    colourSmash(numLEDTotal);
+    addGlitter(50, numLEDTotal);
+    FastLED.show();
+  } else if (ledData.design == 17) {
+    colourSmash2(numLEDTotal);
+    addGlitter(50, numLEDTotal);
+    FastLED.show();
+  } else if (ledData.design == 18) {
+    sinusoidalBeats(numLEDTotal);
+    FastLED.show();
+  } else if (ledData.design == 19) {
+    sinusoidalBeats(numLEDTotal);
+    addGlitter(50, numLEDTotal);
+    FastLED.show();
+  } else if (ledData.design == 20) {
+    sinusoidalBeatsWithBlur(numLEDTotal);
+  } else if (ledData.design == 21) {
+    sinusoidalBeats2(numLEDTotal);
+  } else if (ledData.design == 22) {
+    radiantShimmer(numLEDTotal);
+    FastLED.show();
+  } else if (ledData.design == 23) {
     rotateBrightColoursSmooth(brightColours, brightColoursLen, numLEDTotal);
-  } else if (ledData.design == 17 || ledData.design == 18 || ledData.design == 19) {
+  } else if (ledData.design == 24 || ledData.design == 25 || ledData.design == 26) {
     if (!randomColoursSet) {
       randomColoursSet = true;
       arrayShuffleUniqColoursEffect(brightColours, brightColoursLen, leds, numLEDTotal);
     }
-  } else if (ledData.design == 20) {
+    FastLED.show();
+  } else if (ledData.design == 27) {
       int meteorColourIndex = rand() % meteorColoursLen;
       uint32_t meteorColour = meteorColors[meteorColourIndex];
       meteorRain(meteorColour, numLEDTotal);
-  } else if (ledData.design == 21) {
-    pride(numLEDTotal);
-  } else if (ledData.design == 22) {
-    cylon(numLEDTotal);
-  } else if (ledData.design == 23) {
-    demoReel100(numLEDTotal);
-  } else if (ledData.design == 24) {
-    fire2012(numLEDTotal);
-  } else if (ledData.design == 25) {
-    xyMatrix(numLEDTotal);
-  } else if (ledData.design == 26) {
-    plainColour(0xff5010, numLEDTotal);
-  } else if (ledData.design == 27) {
-    plainColour(0x008080, numLEDTotal);
   } else if (ledData.design == 28) {
-    plainColour(0x32cd32, numLEDTotal);
+    pride(numLEDTotal);
   } else if (ledData.design == 29) {
-    plainColour(0x00ffff, numLEDTotal);
+    cylon(numLEDTotal);
   } else if (ledData.design == 30) {
-    plainColour(0xff50d6, numLEDTotal);
+    demoReel100(numLEDTotal);
   } else if (ledData.design == 31) {
-    plainColour(0xff00ff, numLEDTotal);
+    fire2012(numLEDTotal);
   } else if (ledData.design == 32) {
-    plainColour(0xffff00, numLEDTotal);
+    xyMatrix(numLEDTotal);
   } else if (ledData.design == 33) {
-    plainColour(0xff2200, numLEDTotal);
+    fill_solid(leds, numLEDTotal, 0xff5010);
+    FastLED.show();
   } else if (ledData.design == 34) {
-    plainColour(0x00ff00, numLEDTotal);
+    fill_solid(leds, numLEDTotal, 0x008080);
+    FastLED.show();
   } else if (ledData.design == 35) {
-    plainColour(0x3ce3b4, numLEDTotal);
+    fill_solid(leds, numLEDTotal, 0x32cd32);
+    FastLED.show();
   } else if (ledData.design == 36) {
-    plainColour(0xff0011, numLEDTotal);
+    fill_solid(leds, numLEDTotal, 0x00ffff);
+    FastLED.show();
   } else if (ledData.design == 37) {
+    fill_solid(leds, numLEDTotal, 0xff50d6);
+    FastLED.show();
+  } else if (ledData.design == 38) {
+    fill_solid(leds, numLEDTotal, 0xff00ff);
+    FastLED.show();
+  } else if (ledData.design == 39) {
+    fill_solid(leds, numLEDTotal, 0xffff00);
+    FastLED.show();
+  } else if (ledData.design == 40) {
+    fill_solid(leds, numLEDTotal, 0xff2200);
+    FastLED.show();
+  } else if (ledData.design == 41) {
+    fill_solid(leds, numLEDTotal, 0x00ff00);
+    FastLED.show();
+  } else if (ledData.design == 42) {
+    fill_solid(leds, numLEDTotal, 0x3ce3b4);
+    FastLED.show();
+  } else if (ledData.design == 43) {
+    fill_solid(leds, numLEDTotal, 0xff0011);
+    FastLED.show();
+  } else if (ledData.design == 44) {
     rotateBrightColours(brightColours, brightColoursLen, numLEDTotal);
   } else {
     shutDown(10);
@@ -372,16 +421,20 @@ void loop() {
 }
 
 void buttonPushEvent() {
+  // Prevent skipping effects
+  if (!hasUpdatedOnButtonPress) return;
+
   // Minimum delay between switch presses (sharing all the buttons)
   if (millis() < prevPressTime) return;
 
   prevPressTime = millis() + BUTTON_MIN_DELAY;
-  design = (design + 1) % 39;
+  design = (design + 1) % 46;
   ledData.design = design;
 
   digitalWrite(BUTTON_PUSH_LED_INDICATOR_PIN, LED_ON);
   modeButtonPressed = true;
   modeButtonActivatedTill = millis() + 500;
+  hasUpdatedOnButtonPress = false;
 
   randomColoursSet = false;
   colourSmashData.colourSmashInitialized = false;
