@@ -169,7 +169,7 @@ void shutDown(int shutDownAnimDelay) {
 
 /**
  * Displays the total number of LEDs on the LED strip as a series of white light indicators.
- * The number of indicators displayed is based on the total LED count, with each indicator 
+ * The number of indicators displayed is based on the total LED count, with each indicator
  * representing either 10 LEDs or the total count if less than 10. Each indicator LED
  * gradually brightens to full intensity before moving to the next.
  * After displaying the count, the last LED indicator flashes several times as a visual cue.
@@ -219,7 +219,7 @@ void showLEDCount(unsigned short numLEDTotal) {
 
 /**
  * Writes a given design pattern index to four specified EEPROM addresses for redundancy.
- * This ensures that even if one or more EEPROM locations become corrupted, the design pattern 
+ * This ensures that even if one or more EEPROM locations become corrupted, the design pattern
  * index can still be recovered from the remaining locations, enhancing data reliability.
  *
  * @param design The design pattern index to be stored across the four EEPROM addresses.
@@ -233,7 +233,7 @@ void writeDesignToEEPROM(uint8_t design) {
 
 /**
  * Reads the design pattern index from four specified EEPROM addresses and determines
- * the most common value among them as the valid index. This method provides redundancy, 
+ * the most common value among them as the valid index. This method provides redundancy,
  * allowing recovery of the design pattern index even in the case of partial EEPROM corruption.
  * If no consensus on the index is found (indicating potential corruption), a default value
  * is returned, and the EEPROM locations are reset to this default.
@@ -253,7 +253,7 @@ uint8_t readDesignFromEEPROM() {
 
 /**
  * A generic function for reading and validating a value stored across multiple EEPROM addresses.
- * It checks for the most common value within a specified range across the given addresses, 
+ * It checks for the most common value within a specified range across the given addresses,
  * employing redundancy to protect against data corruption. If a majority is found, that value is
  * considered valid and returned. Otherwise, the function resets all specified addresses to a
  * default value and returns this default, ensuring system resilience to EEPROM corruption.
