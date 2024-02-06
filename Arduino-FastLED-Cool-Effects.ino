@@ -53,6 +53,26 @@ LEDData ledData;
     EEPROM.update(EEPROM_LED_COUNT_ADDRESS_4, num);
   }
 
+  /**
+  * Retrieves the LED count from four specific EEPROM addresses, applying redundancy to ensure
+  * data integrity. The function identifies the most common value among these addresses as the correct
+  * LED count, providing resilience against data corruption. In the absence of a clear majority
+  * (indicating potential corruption), the EEPROM locations are reset to a default LED count,
+  * and this default count is returned.
+  *
+  * @return The validated LED count, or a default count if the stored values are inconsistent or invalid.
+  */
+  uint8_t readLEDCountFromEEPROM() {
+    const uint8_t addresses[4] = {
+      EEPROM_LED_COUNT_ADDRESS_1,
+      EEPROM_LED_COUNT_ADDRESS_2,
+      EEPROM_LED_COUNT_ADDRESS_3,
+      EEPROM_LED_COUNT_ADDRESS_4
+    };
+
+    return readCommonValueFromEEPROM(addresses, 4, MAX_LED_COUNT, DEFAULT_LED_COUNT);
+  }
+
   void updateLEDCount() {
     ledData.numLEDTotal += DEFAULT_LED_COUNT;
 
@@ -229,26 +249,6 @@ uint8_t readDesignFromEEPROM() {
   };
 
   return readCommonValueFromEEPROM(addresses, 4, TOTAL_PATTERNS, 0);
-}
-
-/**
- * Retrieves the LED count from four specific EEPROM addresses, applying redundancy to ensure
- * data integrity. The function identifies the most common value among these addresses as the correct
- * LED count, providing resilience against data corruption. In the absence of a clear majority
- * (indicating potential corruption), the EEPROM locations are reset to a default LED count,
- * and this default count is returned.
- *
- * @return The validated LED count, or a default count if the stored values are inconsistent or invalid.
- */
-uint8_t readLEDCountFromEEPROM() {
-  const uint8_t addresses[4] = {
-    EEPROM_LED_COUNT_ADDRESS_1,
-    EEPROM_LED_COUNT_ADDRESS_2,
-    EEPROM_LED_COUNT_ADDRESS_3,
-    EEPROM_LED_COUNT_ADDRESS_4
-  };
-
-  return readCommonValueFromEEPROM(addresses, 4, MAX_LED_COUNT, DEFAULT_LED_COUNT);
 }
 
 /**
