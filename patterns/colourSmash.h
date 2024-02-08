@@ -33,30 +33,30 @@ struct ColourSmashData {
   bool colourSmashInitialized = false;
   CRGBPalette16 brightHeatMapColourSmash = brightHeatMap_gp_colourSmash;
   CRGBPalette16 brightHeatMapColourSmash2 = brightHeatMap_gp_colourSmash2;
+  unsigned int colourIndex[MAX_LED_COUNT];
 };
 
 struct ColourSmashData colourSmashData;
 
 void runColourSmash(CRGBPalette16 palette, unsigned short numLED, int everyNMilliseconds) {
-  unsigned int colourIndex[numLED];
-
   if (!colourSmashData.colourSmashInitialized) {
     for (unsigned int i = 0; i < numLED; ++i) {
-      colourIndex[i] = generateRandomBrightColour();
+      colourSmashData.colourIndex[i] = generateRandomBrightColour();
     }
     colourSmashData.colourSmashInitialized = true;
   }
 
   for (unsigned int i = 0; i < numLED; ++i) {
-    leds[i] = ColorFromPalette(palette, colourIndex[i], 0xff);
+    leds[i] = ColorFromPalette(palette, colourSmashData.colourIndex[i], 0xff);
   }
 
   EVERY_N_MILLISECONDS(everyNMilliseconds) {
     for (unsigned int i = 0; i < numLED; ++i) {
-      colourIndex[i] = (colourIndex[i] + 1) % 256;
+      colourSmashData.colourIndex[i] = (colourSmashData.colourIndex[i] + 1) % 256;
     }
   }
 }
+
 
 void colourSmash(short numLED) {
   runColourSmash(colourSmashData.brightHeatMapColourSmash, numLED, 5);

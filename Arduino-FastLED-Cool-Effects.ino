@@ -494,17 +494,21 @@ void loop() {
   } else if (selectedDesign == 21) {
     colourSmash(totalLEDCount);
     FastLED.show();
+    FastLED.delay(20);
   } else if (selectedDesign == 22) {
     colourSmash2(totalLEDCount);
     FastLED.show();
+    FastLED.delay(20);
   } else if (selectedDesign == 23) {
     colourSmash(totalLEDCount);
     addGlitter(50, totalLEDCount);
     FastLED.show();
+    FastLED.delay(20);
   } else if (selectedDesign == 24) {
     colourSmash2(totalLEDCount);
     addGlitter(50, totalLEDCount);
     FastLED.show();
+    FastLED.delay(20);
   } else if (selectedDesign == 25) {
     sinusoidalBeats(totalLEDCount);
     FastLED.show();
