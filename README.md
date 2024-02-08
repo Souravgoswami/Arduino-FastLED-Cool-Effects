@@ -16,6 +16,7 @@ You then need to connect the parts in the following way:
 ![WS2811](https://raw.githubusercontent.com/Souravgoswami/Arduino-FastLED-Cool-Effects/master/images/circuit.jpg)
 
 To change any configuration, modify the userConfig.h file.
+To change board from Arduino to ESP8266 or D1 mini, modify the board.h file.
 
 To change LED modes, press the momentary switch button!
 

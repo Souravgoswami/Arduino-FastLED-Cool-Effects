@@ -1,10 +1,21 @@
 #pragma GCC optimize("Os")
 
-#include <Arduino.h>
-#include <FastLED.h>
-#include <EEPROM.h>
-
 #define TOTAL_PATTERNS 46
+
+#include <Arduino.h>
+#include <EEPROM.h>
+#include "board.h"
+
+#if !defined(BOARD_ESP8266) && !defined(BOARD_ARDUINO)
+  #warning "Neither BOARD_ESP8266 nor BOARD_ARDUINO is defined. Using Arduino by default"
+  #define BOARD_ARDUINO
+#endif
+
+#ifdef BOARD_ESP8266
+  #define FASTLED_ALL_PINS_HARDWARE_SPI
+#endif
+
+#include <FastLED.h>
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3001000)
   #warning "Requires FastLED 3.1 or later; check github for latest code."
@@ -18,6 +29,13 @@
 // It is automatically adjusted according to the hardware setup specified in userConfig.h.
 // Users should not modify this section to ensure the proper functioning of LED behaviors as intended by the design.
 // Alterations here may disrupt the operation and compatibility with different LED types.
+
+#if defined(BOARD_ESP8266)
+  #define EEPROM_SAVE_VALUE(address, value) EEPROM.write(address, value); EEPROM.commit();
+#else
+  #define EEPROM_SAVE_VALUE(address, value) EEPROM.update(address, value);
+#endif
+
 #ifdef LED_ACTIVE_LOW
   #define LED_ON LOW
   #define LED_OFF HIGH
@@ -35,22 +53,23 @@ struct LEDData {
   volatile bool hasUpdatedOnButtonPress = false;
   volatile bool randomColoursSet = false;
   volatile bool modeButtonPressed = false;
+  volatile bool flagWriteDesignToEEPROM = false;
+  volatile bool flagWriteLEDCountToEEPROM = false;
 };
 
 LEDData ledData;
 
 #ifdef LED_CHAIN_TOGGLE_BUTTON
-  volatile bool resetButtonPressed = false;
   CRGB leds[MAX_LED_COUNT];
 
   //declare reset function at address 0
   void (*resetFunc)(void) = 0;
 
   void writeLEDCountToEEPROM(uint16_t num) {
-    EEPROM.update(EEPROM_LED_COUNT_ADDRESS_1, num);
-    EEPROM.update(EEPROM_LED_COUNT_ADDRESS_2, num);
-    EEPROM.update(EEPROM_LED_COUNT_ADDRESS_3, num);
-    EEPROM.update(EEPROM_LED_COUNT_ADDRESS_4, num);
+    EEPROM_SAVE_VALUE(EEPROM_LED_COUNT_ADDRESS_1, num);
+    EEPROM_SAVE_VALUE(EEPROM_LED_COUNT_ADDRESS_2, num);
+    EEPROM_SAVE_VALUE(EEPROM_LED_COUNT_ADDRESS_3, num);
+    EEPROM_SAVE_VALUE(EEPROM_LED_COUNT_ADDRESS_4, num);
   }
 
   /**
@@ -83,14 +102,18 @@ LEDData ledData;
     writeLEDCountToEEPROM(ledData.numLEDTotal);
   }
 
-  void resetButtonPushEvent() {
-    // Minimum delay between switch presses (sharing all the buttons)
-    if (millis() < ledData.prevPressTime) return;
-    digitalWrite(CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN, LED_ON);
+  #ifdef BOARD_ESP8266
+    void IRAM_ATTR resetButtonPushEvent() {
+  #else
+    void resetButtonPushEvent() {
+  #endif
+      // Minimum delay between switch presses (sharing all the buttons)
+      if (millis() < ledData.prevPressTime) return;
+      digitalWrite(CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN, LED_ON);
 
-    ledData.prevPressTime = millis() + BUTTON_MIN_DELAY + 100000;
-    resetButtonPressed = true;
-  }
+      ledData.prevPressTime = millis() + BUTTON_MIN_DELAY + 100000;
+      ledData.flagWriteLEDCountToEEPROM = true;
+    }
 #else
   #define MAX_LED_COUNT DEFAULT_LED_COUNT
   CRGB leds[DEFAULT_LED_COUNT];
@@ -225,10 +248,10 @@ void showLEDCount(unsigned short numLEDTotal) {
  * @param design The design pattern index to be stored across the four EEPROM addresses.
  */
 void writeDesignToEEPROM(uint8_t design) {
-  EEPROM.update(EEPROM_DESIGN_ADDRESS_1, design);
-  EEPROM.update(EEPROM_DESIGN_ADDRESS_2, design);
-  EEPROM.update(EEPROM_DESIGN_ADDRESS_3, design);
-  EEPROM.update(EEPROM_DESIGN_ADDRESS_4, design);
+  EEPROM_SAVE_VALUE(EEPROM_DESIGN_ADDRESS_1, design);
+  EEPROM_SAVE_VALUE(EEPROM_DESIGN_ADDRESS_2, design);
+  EEPROM_SAVE_VALUE(EEPROM_DESIGN_ADDRESS_3, design);
+  EEPROM_SAVE_VALUE(EEPROM_DESIGN_ADDRESS_4, design);
 }
 
 /**
@@ -299,7 +322,7 @@ uint8_t readCommonValueFromEEPROM(const uint8_t addresses[], uint8_t numAddresse
   // If no majority found, reset all to default
   if (!validFound) {
     for (uint8_t i = 0; i < numAddresses; i++) {
-      EEPROM.update(addresses[i], defaultValue); // Reset all to default
+      EEPROM_SAVE_VALUE(addresses[i], defaultValue); // Reset all to default
     }
     return 0; // Default value
   } else {
@@ -311,21 +334,26 @@ void setup() {
   delay(1000);
 
   srand(analogRead(A0));
-  // Serial.begin(57800);
+  Serial.begin(115200);
 
-  pinMode(BUTTON_PUSH_LED_INDICATOR_PIN, OUTPUT);
-  digitalWrite(BUTTON_PUSH_LED_INDICATOR_PIN, LED_OFF);
+  #ifdef BOARD_ESP8266
+    EEPROM.begin(128);
+  #endif
+
+  pinMode(BUTTON_DESIGN_LED_INDICATOR_PIN, OUTPUT);
+  digitalWrite(BUTTON_DESIGN_LED_INDICATOR_PIN, LED_OFF);
 
   // Button press event
-  pinMode(BUTTON_PIN, INPUT);
-  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonPushEvent, RISING);
+  pinMode(DESIGN_BUTTON_PIN, INPUT);
+  attachInterrupt(digitalPinToInterrupt(DESIGN_BUTTON_PIN), buttonPushEvent, RISING);
 
   #ifdef LED_CHAIN_TOGGLE_BUTTON
-    pinMode(LED_CHAIN_TOGGLE_BUTTON_PIN, INPUT);
     pinMode(CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN, OUTPUT);
     digitalWrite(CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN, LED_OFF);
 
+    pinMode(LED_CHAIN_TOGGLE_BUTTON_PIN, INPUT);
     attachInterrupt(digitalPinToInterrupt(LED_CHAIN_TOGGLE_BUTTON_PIN), resetButtonPushEvent, RISING);
+
     ledData.numLEDTotal = readLEDCountFromEEPROM();
 
     // If the stored value is not within our expected range, reset it to DEFAULT_LED_COUNT
@@ -350,7 +378,6 @@ void setup() {
   #endif
 
   ledData.design = readDesignFromEEPROM();
-
   if (ledData.design > TOTAL_PATTERNS) {
     ledData.design = 0;
     writeDesignToEEPROM(ledData.design);
@@ -359,8 +386,8 @@ void setup() {
 
 void loop() {
   #ifdef LED_CHAIN_TOGGLE_BUTTON
-    if (resetButtonPressed) {
-      resetButtonPressed = false;
+    if (ledData.flagWriteLEDCountToEEPROM) {
+      ledData.flagWriteLEDCountToEEPROM = false;
 
       delay(1000);
       updateLEDCount();
@@ -368,18 +395,29 @@ void loop() {
       digitalWrite(CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN, LED_ON);
       delay(50);
 
-      resetFunc();
+      #if defined(BOARD_ESP8266)
+        ESP.restart();
+      #elif defined(BOARD_ARDUINO)
+        resetFunc();
+      #endif
+
       return;
     }
   #endif
 
   if (ledData.modeButtonPressed && ledData.modeButtonActivatedTill < millis()) {
     ledData.modeButtonPressed = false;
-    digitalWrite(BUTTON_PUSH_LED_INDICATOR_PIN, LED_OFF);
+    digitalWrite(BUTTON_DESIGN_LED_INDICATOR_PIN, LED_OFF);
   }
 
   if (!ledData.hasUpdatedOnButtonPress) {
     ledData.hasUpdatedOnButtonPress = true;
+  }
+
+  if (ledData.flagWriteDesignToEEPROM) {
+    // Perform the EEPROM write operation here
+    writeDesignToEEPROM(ledData.design);
+    ledData.flagWriteDesignToEEPROM = false;
   }
 
   if (ledData.design == 0) {
@@ -528,24 +566,28 @@ void loop() {
   }
 }
 
-void buttonPushEvent() {
-  // Prevent skipping effects
-  if (!ledData.hasUpdatedOnButtonPress) return;
+#ifdef BOARD_ESP8266
+  void IRAM_ATTR buttonPushEvent() {
+#else
+  void buttonPushEvent() {
+#endif
+    // Prevent skipping effects
+    if (!ledData.hasUpdatedOnButtonPress) return;
 
-  // Minimum delay between switch presses (sharing all the buttons)
-  if (millis() < ledData.prevPressTime) return;
+    // Minimum delay between switch presses (sharing all the buttons)
+    if (millis() < ledData.prevPressTime) return;
 
-  ledData.prevPressTime = millis() + BUTTON_MIN_DELAY;
-  ledData.design = (ledData.design + 1) % (TOTAL_PATTERNS + 2);
-  writeDesignToEEPROM(ledData.design);
+    ledData.prevPressTime = millis() + BUTTON_MIN_DELAY;
+    ledData.design = (ledData.design + 1) % (TOTAL_PATTERNS + 2);
+    ledData.flagWriteDesignToEEPROM = true;
 
-  digitalWrite(BUTTON_PUSH_LED_INDICATOR_PIN, LED_ON);
-  ledData.modeButtonPressed = true;
-  ledData.modeButtonActivatedTill = millis() + 500;
-  ledData.hasUpdatedOnButtonPress = false;
+    digitalWrite(BUTTON_DESIGN_LED_INDICATOR_PIN, LED_ON);
+    ledData.modeButtonPressed = true;
+    ledData.modeButtonActivatedTill = millis() + 500;
+    ledData.hasUpdatedOnButtonPress = false;
 
-  ledData.randomColoursSet = false;
-  colourSmashData.colourSmashInitialized = false;
+    ledData.randomColoursSet = false;
+    colourSmashData.colourSmashInitialized = false;
 
-  FastLED.setBrightness(BRIGHTNESS);
-}
+    FastLED.setBrightness(BRIGHTNESS);
+  }

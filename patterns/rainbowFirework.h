@@ -85,7 +85,7 @@ void rainbowFirework(unsigned short numLEDs) {
         if (ledBrightness[i] < 255) {
             ledBrightness[i] = min(ledBrightness[i] + 5, 255);
 
-            unsigned int distance = abs(i - startLed);
+            unsigned int distance = abs(static_cast<int>(i) - static_cast<int>(startLed));
             unsigned int hueOffset = distance * 5; // Determines the color spread in the rainbow
             unsigned char hue = (startHue + hueOffset) % 256;
 

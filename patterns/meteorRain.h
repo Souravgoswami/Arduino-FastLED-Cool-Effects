@@ -11,9 +11,9 @@ struct MetorRainData {
 MetorRainData metorRainData;
 
 void meteorRain(uint32_t colour, unsigned short numLED) {
-  unsigned short meteorSize = max(1, (unsigned short)(numLED * metorRainData.meteorSizeFactor));
-  unsigned char meteorTrailDecay = max(1, (unsigned char)(255 * metorRainData.meteorTrailDecayFactor));
-  unsigned short meteorTrailLength = max(1, (unsigned short)(numLED * metorRainData.meteorTrailLengthFactor));
+  unsigned short meteorSize = max(1, (int)(numLED * metorRainData.meteorSizeFactor));
+  unsigned char meteorTrailDecay = max(1, (int)(255 * metorRainData.meteorTrailDecayFactor));
+  unsigned short meteorTrailLength = max(1, (int)(numLED * metorRainData.meteorTrailLengthFactor));
 
   unsigned char r = colour >> 16;
   unsigned char g = (colour >> 8) & 0xff;
