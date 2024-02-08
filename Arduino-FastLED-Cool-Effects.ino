@@ -387,6 +387,9 @@ void setup() {
 }
 
 void loop() {
+  uint8_t selectedDesign = ledData.design;
+  uint8_t totalLEDCount = ledData.numLEDTotal;
+
   #ifdef LED_CHAIN_TOGGLE_BUTTON
     if (ledData.flagWriteLEDCountToEEPROM) {
       ledData.flagWriteLEDCountToEEPROM = false;
@@ -418,159 +421,159 @@ void loop() {
 
   if (ledData.flagWriteDesignToEEPROM) {
     // Perform the EEPROM write operation here
-    writeDesignToEEPROM(ledData.design);
+    writeDesignToEEPROM(selectedDesign);
     ledData.flagWriteDesignToEEPROM = false;
   }
 
-  if (ledData.design == 0) {
-    rotatingRainbowHue(ledData.numLEDTotal);
+  if (selectedDesign == 0) {
+    rotatingRainbowHue(totalLEDCount);
     FastLED.delay(5);
     FastLED.show();
-  } else if (ledData.design == 1) {
-    rotatingRainbowHue(ledData.numLEDTotal);
-    addGlitter(50, ledData.numLEDTotal);
+  } else if (selectedDesign == 1) {
+    rotatingRainbowHue(totalLEDCount);
+    addGlitter(50, totalLEDCount);
     FastLED.delay(5);
     FastLED.show();
-  } else if (ledData.design == 2) {
-    rainbowFirework(ledData.numLEDTotal);
-  } else if (ledData.design == 3) {
-    staticRainbowChase(leds, ledData.numLEDTotal);
+  } else if (selectedDesign == 2) {
+    rainbowFirework(totalLEDCount);
+  } else if (selectedDesign == 3) {
+    staticRainbowChase(leds, totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 4) {
-    dynamicRainbowChase(leds, ledData.numLEDTotal);
+  } else if (selectedDesign == 4) {
+    dynamicRainbowChase(leds, totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 5) {
-    rainbowWaterfall(30, 7, ledData.numLEDTotal);
-    FastLED.show();
-    FastLED.delay(30);
-  } else if (ledData.design == 6) {
-    rainbowWaterfallHueRotate(30, 7, ledData.numLEDTotal);
+  } else if (selectedDesign == 5) {
+    rainbowWaterfall(30, 7, totalLEDCount);
     FastLED.show();
     FastLED.delay(30);
-  } else if (ledData.design == 7) {
-    reverseRainbowWaterfall(30, 7, ledData.numLEDTotal);
+  } else if (selectedDesign == 6) {
+    rainbowWaterfallHueRotate(30, 7, totalLEDCount);
     FastLED.show();
     FastLED.delay(30);
-  } else if (ledData.design == 8) {
-    reverseRainbowWaterfallHueRotate(30, 7, ledData.numLEDTotal);
+  } else if (selectedDesign == 7) {
+    reverseRainbowWaterfall(30, 7, totalLEDCount);
     FastLED.show();
     FastLED.delay(30);
-  } else if (ledData.design == 9) {
-    fallingRainbowSnowEffect(leds, ledData.numLEDTotal);
-  } else if (ledData.design == 10) {
-    gradientChase(leds, ledData.numLEDTotal, false);
-  } else if (ledData.design == 11) {
-    gradientChase(leds, ledData.numLEDTotal, true);
-  } else if (ledData.design == 12) {
-    gradientChaseClash(leds, ledData.numLEDTotal);
-  } else if (ledData.design == 13) {
-    moveRainbowLight(ledData.numLEDTotal, leds);
-  } else if (ledData.design == 14) {
-    staticFullChainRainbow(leds, ledData.numLEDTotal);
+  } else if (selectedDesign == 8) {
+    reverseRainbowWaterfallHueRotate(30, 7, totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 15) {
-    staticFullChainRainbow(leds, ledData.numLEDTotal);
-    addGlitter(50, ledData.numLEDTotal);
+    FastLED.delay(30);
+  } else if (selectedDesign == 9) {
+    fallingRainbowSnowEffect(leds, totalLEDCount);
+  } else if (selectedDesign == 10) {
+    gradientChase(leds, totalLEDCount, false);
+  } else if (selectedDesign == 11) {
+    gradientChase(leds, totalLEDCount, true);
+  } else if (selectedDesign == 12) {
+    gradientChaseClash(leds, totalLEDCount);
+  } else if (selectedDesign == 13) {
+    moveRainbowLight(totalLEDCount, leds);
+  } else if (selectedDesign == 14) {
+    staticFullChainRainbow(leds, totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 16) {
-    rainbowWave(10, ledData.numLEDTotal);
-  } else if (ledData.design == 17) {
-    fill_rainbow(leds, ledData.numLEDTotal, 0, 7);
+  } else if (selectedDesign == 15) {
+    staticFullChainRainbow(leds, totalLEDCount);
+    addGlitter(50, totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 18) {
-    fill_rainbow(leds, ledData.numLEDTotal, 0, 7);
-    addGlitter(50, ledData.numLEDTotal);
+  } else if (selectedDesign == 16) {
+    rainbowWave(10, totalLEDCount);
+  } else if (selectedDesign == 17) {
+    fill_rainbow(leds, totalLEDCount, 0, 7);
     FastLED.show();
-  } else if (ledData.design == 19) {
-    rainbow2(ledData.numLEDTotal, 6);
+  } else if (selectedDesign == 18) {
+    fill_rainbow(leds, totalLEDCount, 0, 7);
+    addGlitter(50, totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 20) {
-    rainbowSmash(ledData.numLEDTotal);
+  } else if (selectedDesign == 19) {
+    rainbow2(totalLEDCount, 6);
+    FastLED.show();
+  } else if (selectedDesign == 20) {
+    rainbowSmash(totalLEDCount);
     FastLED.show();
     FastLED.delay(15);
-  } else if (ledData.design == 21) {
-    colourSmash(ledData.numLEDTotal);
+  } else if (selectedDesign == 21) {
+    colourSmash(totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 22) {
-    colourSmash2(ledData.numLEDTotal);
+  } else if (selectedDesign == 22) {
+    colourSmash2(totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 23) {
-    colourSmash(ledData.numLEDTotal);
-    addGlitter(50, ledData.numLEDTotal);
+  } else if (selectedDesign == 23) {
+    colourSmash(totalLEDCount);
+    addGlitter(50, totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 24) {
-    colourSmash2(ledData.numLEDTotal);
-    addGlitter(50, ledData.numLEDTotal);
+  } else if (selectedDesign == 24) {
+    colourSmash2(totalLEDCount);
+    addGlitter(50, totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 25) {
-    sinusoidalBeats(ledData.numLEDTotal);
+  } else if (selectedDesign == 25) {
+    sinusoidalBeats(totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 26) {
-    sinusoidalBeats(ledData.numLEDTotal);
-    addGlitter(50, ledData.numLEDTotal);
+  } else if (selectedDesign == 26) {
+    sinusoidalBeats(totalLEDCount);
+    addGlitter(50, totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 27) {
-    sinusoidalBeatsWithBlur(ledData.numLEDTotal);
-  } else if (ledData.design == 28) {
-    sinusoidalBeats2(ledData.numLEDTotal);
-  } else if (ledData.design == 29) {
-    radiantShimmer(ledData.numLEDTotal);
+  } else if (selectedDesign == 27) {
+    sinusoidalBeatsWithBlur(totalLEDCount);
+  } else if (selectedDesign == 28) {
+    sinusoidalBeats2(totalLEDCount);
+  } else if (selectedDesign == 29) {
+    radiantShimmer(totalLEDCount);
     FastLED.show();
-  } else if (ledData.design == 30) {
-    rotateBrightColoursSmooth(brightColours, brightColoursLen, ledData.numLEDTotal);
-  } else if (ledData.design == 31 || ledData.design == 32 || ledData.design == 33) {
+  } else if (selectedDesign == 30) {
+    rotateBrightColoursSmooth(brightColours, brightColoursLen, totalLEDCount);
+  } else if (selectedDesign == 31 || selectedDesign == 32 || selectedDesign == 33) {
     if (!ledData.randomColoursSet) {
       ledData.randomColoursSet = true;
-      arrayShuffleUniqColoursEffect(brightColours, brightColoursLen, leds, ledData.numLEDTotal);
+      arrayShuffleUniqColoursEffect(brightColours, brightColoursLen, leds, totalLEDCount);
     }
     FastLED.show();
-  } else if (ledData.design == 34) {
+  } else if (selectedDesign == 34) {
     int meteorColourIndex = rand() % meteorColoursLen;
     uint32_t meteorColour = meteorColors[meteorColourIndex];
-    meteorRain(meteorColour, ledData.numLEDTotal);
-  } else if (ledData.design == 35) {
-    pride(ledData.numLEDTotal);
-  } else if (ledData.design == 36) {
-    cylon(ledData.numLEDTotal);
-  } else if (ledData.design == 37) {
-    demoReel100(ledData.numLEDTotal);
-  } else if (ledData.design == 38) {
-    fire2012(ledData.numLEDTotal);
-  } else if (ledData.design == 39) {
-    fill_solid(leds, ledData.numLEDTotal, 0xff5010);
+    meteorRain(meteorColour, totalLEDCount);
+  } else if (selectedDesign == 35) {
+    pride(totalLEDCount);
+  } else if (selectedDesign == 36) {
+    cylon(totalLEDCount);
+  } else if (selectedDesign == 37) {
+    demoReel100(totalLEDCount);
+  } else if (selectedDesign == 38) {
+    fire2012(totalLEDCount);
+  } else if (selectedDesign == 39) {
+    fill_solid(leds, totalLEDCount, 0xff5010);
     FastLED.show();
-  } else if (ledData.design == 40) {
-    fill_solid(leds, ledData.numLEDTotal, 0x008080);
+  } else if (selectedDesign == 40) {
+    fill_solid(leds, totalLEDCount, 0x008080);
     FastLED.show();
-  } else if (ledData.design == 41) {
-    fill_solid(leds, ledData.numLEDTotal, 0x32cd32);
+  } else if (selectedDesign == 41) {
+    fill_solid(leds, totalLEDCount, 0x32cd32);
     FastLED.show();
-  } else if (ledData.design == 42) {
-    fill_solid(leds, ledData.numLEDTotal, 0x00ffff);
+  } else if (selectedDesign == 42) {
+    fill_solid(leds, totalLEDCount, 0x00ffff);
     FastLED.show();
-  } else if (ledData.design == 43) {
-    fill_solid(leds, ledData.numLEDTotal, 0xff50d6);
+  } else if (selectedDesign == 43) {
+    fill_solid(leds, totalLEDCount, 0xff50d6);
     FastLED.show();
-  } else if (ledData.design == 44) {
-    fill_solid(leds, ledData.numLEDTotal, 0xff00ff);
+  } else if (selectedDesign == 44) {
+    fill_solid(leds, totalLEDCount, 0xff00ff);
     FastLED.show();
-  } else if (ledData.design == 45) {
-    fill_solid(leds, ledData.numLEDTotal, 0xffff00);
+  } else if (selectedDesign == 45) {
+    fill_solid(leds, totalLEDCount, 0xffff00);
     FastLED.show();
-  } else if (ledData.design == 46) {
-    fill_solid(leds, ledData.numLEDTotal, 0xff2200);
+  } else if (selectedDesign == 46) {
+    fill_solid(leds, totalLEDCount, 0xff2200);
     FastLED.show();
-  } else if (ledData.design == 47) {
-    fill_solid(leds, ledData.numLEDTotal, 0x00ff00);
+  } else if (selectedDesign == 47) {
+    fill_solid(leds, totalLEDCount, 0x00ff00);
     FastLED.show();
-  } else if (ledData.design == 48) {
-    fill_solid(leds, ledData.numLEDTotal, 0x3ce3b4);
+  } else if (selectedDesign == 48) {
+    fill_solid(leds, totalLEDCount, 0x3ce3b4);
     FastLED.show();
-  } else if (ledData.design == 49) {
-    fill_solid(leds, ledData.numLEDTotal, 0xff0011);
+  } else if (selectedDesign == 49) {
+    fill_solid(leds, totalLEDCount, 0xff0011);
     FastLED.show();
-  } else if (ledData.design == 50) {
-    rotateBrightColours(brightColours, brightColoursLen, ledData.numLEDTotal);
+  } else if (selectedDesign == 50) {
+    rotateBrightColours(brightColours, brightColoursLen, totalLEDCount);
   } else {
     shutDown(10);
   }
