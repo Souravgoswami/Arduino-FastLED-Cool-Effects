@@ -45,19 +45,18 @@
 #endif
 
 struct LEDData {
-  volatile unsigned long long modeButtonActivatedTill = 0;
-  volatile unsigned long prevPressTime = 0;
-  int numLEDTotal = DEFAULT_LED_COUNT;
+  unsigned long long modeButtonActivatedTill = 0;
+  unsigned long prevPressTime = 0;
+  uint16_t numLEDTotal = DEFAULT_LED_COUNT;
   uint8_t design = 0;
-  uint8_t brightness = 255;
-  volatile bool hasUpdatedOnButtonPress = false;
-  volatile bool randomColoursSet = false;
-  volatile bool modeButtonPressed = false;
-  volatile bool flagWriteDesignToEEPROM = false;
-  volatile bool flagWriteLEDCountToEEPROM = false;
+  bool hasUpdatedOnButtonPress = false;
+  bool randomColoursSet = false;
+  bool modeButtonPressed = false;
+  bool flagWriteDesignToEEPROM = false;
+  bool flagWriteLEDCountToEEPROM = false;
 };
 
-LEDData ledData;
+volatile LEDData ledData;
 
 #ifdef LED_CHAIN_TOGGLE_BUTTON
   CRGB leds[MAX_LED_COUNT];
@@ -605,6 +604,4 @@ void loop() {
 
     ledData.randomColoursSet = false;
     colourSmashData.colourSmashInitialized = false;
-
-    FastLED.setBrightness(BRIGHTNESS);
   }
