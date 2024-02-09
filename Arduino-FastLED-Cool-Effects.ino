@@ -475,7 +475,7 @@ void loop() {
     addGlitter(50, totalLEDCount);
     FastLED.show();
   } else if (selectedDesign == 16) {
-    rainbowWave(10, totalLEDCount);
+    rainbowWave(7, totalLEDCount);
   } else if (selectedDesign == 17) {
     fill_rainbow(leds, totalLEDCount, 0, 7);
     FastLED.show();
