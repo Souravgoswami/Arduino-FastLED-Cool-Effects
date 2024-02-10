@@ -51,6 +51,11 @@
   #define DESIGN_BUTTON_PIN 5
 #endif
 
+// Delay before committing the final user-selected design to EEPROM, providing a window to capture the last
+// design change in case of rapid user interactions. This approach minimizes EEPROM writes by waiting for
+// user input to stabilize, thereby extending EEPROM lifespan by reducing write cycles.
+#define EEPROM_WRITE_DELAY_AFTER_LAST_CHANGE 2500
+
 // Choose between LED_ACTIVE_LOW and LED_ACTIVE_HIGH based on your LED's configuration.
 // Define LED_ACTIVE_LOW for using common anode RGB LEDs or active-low LEDs.
 // Or if you have +ve connected to the LED and you want to toggle the -ve, use LED_ACTIVE_LOW.

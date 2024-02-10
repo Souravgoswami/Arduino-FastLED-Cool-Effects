@@ -44,19 +44,19 @@
   #define LED_OFF LOW
 #endif
 
-struct LEDData {
-  unsigned long long modeButtonActivatedTill = 0;
-  unsigned long prevPressTime = 0;
+volatile struct LEDData {
+  uint32_t modeButtonActivatedTill = 0;
+  uint32_t prevPressTime = 0;
+  uint32_t scheduledEEPROMWriteTime = 0;
   uint16_t numLEDTotal = DEFAULT_LED_COUNT;
   uint8_t design = 0;
   bool hasUpdatedOnButtonPress = false;
   bool randomColoursSet = false;
   bool modeButtonPressed = false;
-  bool flagWriteDesignToEEPROM = false;
+  bool designChangeDetected = false;
+  bool eepromWritePendingDelay = false;
   bool flagWriteLEDCountToEEPROM = false;
-};
-
-volatile LEDData ledData;
+} ledData;
 
 #ifdef LED_CHAIN_TOGGLE_BUTTON
   CRGB leds[MAX_LED_COUNT];
@@ -110,7 +110,7 @@ volatile LEDData ledData;
       if (millis() < ledData.prevPressTime) return;
       digitalWrite(CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN, LED_ON);
 
-      ledData.prevPressTime = millis() + BUTTON_MIN_DELAY + 100000;
+      ledData.prevPressTime = millis() + BUTTON_MIN_DELAY + 100000L;
       ledData.flagWriteLEDCountToEEPROM = true;
     }
 #else
@@ -388,6 +388,7 @@ void setup() {
 void loop() {
   uint8_t selectedDesign = ledData.design;
   uint8_t totalLEDCount = ledData.numLEDTotal;
+  uint32_t currentTime = millis();
 
   #ifdef LED_CHAIN_TOGGLE_BUTTON
     if (ledData.flagWriteLEDCountToEEPROM) {
@@ -409,7 +410,7 @@ void loop() {
     }
   #endif
 
-  if (ledData.modeButtonPressed && ledData.modeButtonActivatedTill < millis()) {
+  if (ledData.modeButtonPressed && ledData.modeButtonActivatedTill < currentTime) {
     ledData.modeButtonPressed = false;
     digitalWrite(BUTTON_DESIGN_LED_INDICATOR_PIN, LED_OFF);
   }
@@ -418,10 +419,15 @@ void loop() {
     ledData.hasUpdatedOnButtonPress = true;
   }
 
-  if (ledData.flagWriteDesignToEEPROM) {
-    // Perform the EEPROM write operation here
-    writeDesignToEEPROM(selectedDesign);
-    ledData.flagWriteDesignToEEPROM = false;
+  if (ledData.designChangeDetected) {
+    ledData.designChangeDetected = false;
+    ledData.eepromWritePendingDelay = true;
+    ledData.scheduledEEPROMWriteTime = currentTime + EEPROM_WRITE_DELAY_AFTER_LAST_CHANGE;
+  }
+
+  if (ledData.eepromWritePendingDelay && currentTime > ledData.scheduledEEPROMWriteTime) {
+    ledData.eepromWritePendingDelay = false;
+    writeDesignToEEPROM(ledData.design);
   }
 
   if (selectedDesign == 0) {
@@ -590,17 +596,21 @@ void loop() {
     // Prevent skipping effects
     if (!ledData.hasUpdatedOnButtonPress) return;
 
-    // Minimum delay between switch presses (sharing all the buttons)
-    if (millis() < ledData.prevPressTime) return;
+    uint32_t currentTime = millis();
 
-    ledData.prevPressTime = millis() + BUTTON_MIN_DELAY;
+    // Minimum delay between switch presses (sharing all the buttons)
+    if (currentTime < ledData.prevPressTime) return;
+
+    ledData.prevPressTime = currentTime + BUTTON_MIN_DELAY;
     ledData.design = (ledData.design + 1) % (TOTAL_PATTERNS + 2);
-    ledData.flagWriteDesignToEEPROM = true;
 
     digitalWrite(BUTTON_DESIGN_LED_INDICATOR_PIN, LED_ON);
     ledData.modeButtonPressed = true;
-    ledData.modeButtonActivatedTill = millis() + 500;
+    ledData.modeButtonActivatedTill = currentTime + 500;
     ledData.hasUpdatedOnButtonPress = false;
+
+    // Indicate a design change has been detected, triggering the preparation for an EEPROM write.
+    ledData.designChangeDetected = true;
 
     ledData.randomColoursSet = false;
     colourSmashData.colourSmashInitialized = false;
