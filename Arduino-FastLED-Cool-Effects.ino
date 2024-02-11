@@ -1,6 +1,6 @@
 #pragma GCC optimize("Os")
 
-#define TOTAL_PATTERNS 50
+#define TOTAL_PATTERNS 48
 
 #include <Arduino.h>
 #include <EEPROM.h>
@@ -130,11 +130,9 @@ volatile struct LEDData {
 #include "patterns/meteorRain.h"
 #include "patterns/moveRainbowLight.h"
 #include "patterns/pride.h"
-#include "patterns/radiantShimmer.h"
 #include "patterns/rainbow2.h"
 #include "patterns/rainbowChasers.h"
 #include "patterns/rainbowFirework.h"
-#include "patterns/rainbowSmash.h"
 #include "patterns/rainbowWaterfall.h"
 #include "patterns/rainbowWaterfallHueRotate.h"
 #include "patterns/rainbowWave.h"
@@ -492,96 +490,88 @@ void loop() {
     rainbow2(totalLEDCount, 6);
     FastLED.show();
   } else if (selectedDesign == 20) {
-    // TODO Remove rainbowSmash
-    rainbowSmash(totalLEDCount);
-    FastLED.show();
-    FastLED.delay(15);
-  } else if (selectedDesign == 21) {
     colourSmash(totalLEDCount);
     FastLED.show();
     FastLED.delay(20);
-  } else if (selectedDesign == 22) {
+  } else if (selectedDesign == 21) {
     colourSmash2(totalLEDCount);
     FastLED.show();
     FastLED.delay(20);
-  } else if (selectedDesign == 23) {
+  } else if (selectedDesign == 22) {
     colourSmash(totalLEDCount);
+    addGlitter(50, totalLEDCount);
+    FastLED.show();
+    FastLED.delay(20);
+  } else if (selectedDesign == 23) {
+    colourSmash2(totalLEDCount);
     addGlitter(50, totalLEDCount);
     FastLED.show();
     FastLED.delay(20);
   } else if (selectedDesign == 24) {
-    colourSmash2(totalLEDCount);
-    addGlitter(50, totalLEDCount);
+    sinusoidalBeats(totalLEDCount);
     FastLED.show();
-    FastLED.delay(20);
   } else if (selectedDesign == 25) {
     sinusoidalBeats(totalLEDCount);
-    FastLED.show();
-  } else if (selectedDesign == 26) {
-    sinusoidalBeats(totalLEDCount);
     addGlitter(50, totalLEDCount);
     FastLED.show();
-  } else if (selectedDesign == 27) {
+  } else if (selectedDesign == 26) {
     sinusoidalBeatsWithBlur(totalLEDCount);
-  } else if (selectedDesign == 28) {
+  } else if (selectedDesign == 27) {
     sinusoidalBeats2(totalLEDCount);
-  } else if (selectedDesign == 29) {
-    radiantShimmer(totalLEDCount);
-    FastLED.show();
-  } else if (selectedDesign == 30) {
+  } else if (selectedDesign == 28) {
     rotateBrightColoursSmooth(brightColours, brightColoursLen, totalLEDCount);
-  } else if (selectedDesign == 31 || selectedDesign == 32 || selectedDesign == 33) {
+  } else if (selectedDesign == 29 || selectedDesign == 30 || selectedDesign == 31) {
     if (!ledData.randomColoursSet) {
       ledData.randomColoursSet = true;
       arrayShuffleUniqColoursEffect(brightColours, brightColoursLen, leds, totalLEDCount);
     }
     FastLED.show();
-  } else if (selectedDesign == 34) {
+  } else if (selectedDesign == 32) {
     int16_t meteorColourIndex = rand() % meteorColoursLen;
     uint32_t meteorColour = meteorColors[meteorColourIndex];
     meteorRain(meteorColour, totalLEDCount);
-  } else if (selectedDesign == 35) {
+  } else if (selectedDesign == 33) {
     pride(totalLEDCount);
-  } else if (selectedDesign == 36) {
+  } else if (selectedDesign == 34) {
     cylon(totalLEDCount);
-  } else if (selectedDesign == 37) {
+  } else if (selectedDesign == 35) {
     demoReel100(totalLEDCount);
-  } else if (selectedDesign == 38) {
+  } else if (selectedDesign == 36) {
     fire2012(totalLEDCount);
-  } else if (selectedDesign == 39) {
+  } else if (selectedDesign == 37) {
     fill_solid(leds, totalLEDCount, 0xff5010);
     FastLED.show();
-  } else if (selectedDesign == 40) {
+  } else if (selectedDesign == 38) {
     fill_solid(leds, totalLEDCount, 0x008080);
     FastLED.show();
-  } else if (selectedDesign == 41) {
+  } else if (selectedDesign == 39) {
     fill_solid(leds, totalLEDCount, 0x32cd32);
     FastLED.show();
-  } else if (selectedDesign == 42) {
+  } else if (selectedDesign == 40) {
     fill_solid(leds, totalLEDCount, 0x00ffff);
     FastLED.show();
-  } else if (selectedDesign == 43) {
+  } else if (selectedDesign == 41) {
     fill_solid(leds, totalLEDCount, 0xff50d6);
     FastLED.show();
-  } else if (selectedDesign == 44) {
+  } else if (selectedDesign == 42) {
     fill_solid(leds, totalLEDCount, 0xff00ff);
     FastLED.show();
-  } else if (selectedDesign == 45) {
+  } else if (selectedDesign == 43) {
     fill_solid(leds, totalLEDCount, 0xffff00);
     FastLED.show();
-  } else if (selectedDesign == 46) {
+  } else if (selectedDesign == 44) {
     fill_solid(leds, totalLEDCount, 0xff2200);
     FastLED.show();
-  } else if (selectedDesign == 47) {
+  } else if (selectedDesign == 45) {
     fill_solid(leds, totalLEDCount, 0x00ff00);
     FastLED.show();
-  } else if (selectedDesign == 48) {
+  } else if (selectedDesign == 46) {
     fill_solid(leds, totalLEDCount, 0x3ce3b4);
     FastLED.show();
-  } else if (selectedDesign == 49) {
+  } else if (selectedDesign == 47) {
     fill_solid(leds, totalLEDCount, 0xff0011);
     FastLED.show();
-  } else if (selectedDesign == 50) {
+  } else if (selectedDesign == 48) {
     rotateBrightColours(brightColours, brightColoursLen, totalLEDCount);
   } else {
     shutDown(10);
