@@ -12,11 +12,11 @@
  * Usage Example:
  *    rainbowWave(20, NUM_LEDS); // Call this in the main loop to animate the rainbow wave with a 20ms frame delay.
  */
-void rainbowWave(int wait, int numLEDs) {
+void rainbowWave(uint8_t wait, uint16_t numLEDs) {
   static uint8_t hue = 0;
   uint8_t time = millis() / 25;
 
-  for(int i = 0; i < numLEDs; i++) {
+  for(uint16_t i = 0; i < numLEDs; i++) {
     // Calculate the base hue with a smooth transition
     uint8_t baseHue = (i * 10) + hue;
 

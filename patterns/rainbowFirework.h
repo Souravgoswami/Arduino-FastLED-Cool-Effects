@@ -1,13 +1,13 @@
 struct RainbowFireworkData {
-  unsigned short delay = 2500; // The delay time in milliseconds to hold the rainbow
-  unsigned long releaseDelayAt = 0;
+  const uint16_t delay = 2500; // The delay time in milliseconds to hold the rainbow
+  uint32_t releaseDelayAt = 0;
   bool inDelayedPeriod = false;
 };
 
 // Global instance of the structure to hold the animation state and timing.
 RainbowFireworkData rainbowFireworkData;
 
-void rainbowFirework(unsigned short numLEDs) {
+void rainbowFirework(uint16_t numLEDs) {
   // Check if the animation is currently in its delay period.
   if (rainbowFireworkData.inDelayedPeriod) {
     if (millis() > rainbowFireworkData.releaseDelayAt) {
@@ -21,16 +21,16 @@ void rainbowFirework(unsigned short numLEDs) {
 
   // Main animation logic.
   // Randomly select a starting LED for the animation.
-  unsigned char startLed = random(numLEDs);
+  uint8_t startLed = random(numLEDs);
 
   // Define minimum and maximum delay factors for the animation effects.
-  unsigned int delayFactorMin = 750; // 7.5ms for 1 LED, 1250 for 100
-  unsigned int delayFactorMax = 1250; // 12.5ms for 1 LED, 1250 for 100
-  unsigned int delayPerLEDMin = delayFactorMin / numLEDs;
-  unsigned int delayPerLEDMax = delayFactorMax / numLEDs;
+  uint16_t delayFactorMin = 750; // 7.5ms for 1 LED, 1250 for 100
+  uint16_t delayFactorMax = 1250; // 12.5ms for 1 LED, 1250 for 100
+  uint16_t delayPerLEDMin = delayFactorMin / numLEDs;
+  uint16_t delayPerLEDMax = delayFactorMax / numLEDs;
 
   // Gradually fade all LEDs to black.
-  for (unsigned short i = 0; i < 256; i++) {
+  for (uint16_t i = 0; i < 256; i++) {
     fadeToBlackBy(leds, numLEDs, 1);
     FastLED.show();
     FastLED.delay(5);
@@ -42,17 +42,17 @@ void rainbowFirework(unsigned short numLEDs) {
   FastLED.delay(5);
 
   // Set the color of the randomly selected start LED to a hue.
-  unsigned char startHue = random(256);
+  uint8_t startHue = random(256);
   leds[startLed] = CHSV(startHue, 255, 255);
   FastLED.show();
 
   // Pause for a random duration between animations.
-  unsigned short randomDelayDuration = random16(250, 500);
+  uint16_t randomDelayDuration = random16(250, 500);
   FastLED.delay(randomDelayDuration);
 
   // Create a fizzling effect on the start LED.
-  unsigned short flashDuration = random8(10, 25); // Duration for the fizzling effect.
-  for(unsigned short i = 0; i < flashDuration; ++i) {
+  uint16_t flashDuration = random8(10, 25); // Duration for the fizzling effect.
+  for(uint16_t i = 0; i < flashDuration; ++i) {
     // Randomly alternate the color of the start LED between white and its hue.
     leds[startLed] = (random8(10) >= 5) ? CRGB::White : CRGB(CHSV(startHue, 255, 255));
     FastLED.show();
@@ -60,8 +60,8 @@ void rainbowFirework(unsigned short numLEDs) {
   }
 
   // Create a rapidly increasing flash rate effect on the start LED.
-  unsigned short rapidFlashDuration = random8(10, 20); // Duration for the rapid flashing.
-  for (unsigned short i = 0; i < rapidFlashDuration; ++i) {
+  uint16_t rapidFlashDuration = random8(10, 20); // Duration for the rapid flashing.
+  for (uint16_t i = 0; i < rapidFlashDuration; ++i) {
     leds[startLed] = (i % 2 == 0) ? CRGB::White : CRGB(CHSV(startHue, 255, 255));
     FastLED.show();
     FastLED.delay(i);
@@ -73,20 +73,20 @@ void rainbowFirework(unsigned short numLEDs) {
   FastLED.delay(random8(20, 60)); // Random delay before moving on.
 
   // Initialize an array to track the brightness level of each LED.
-  unsigned char ledBrightness[numLEDs] = {0};
+  uint8_t ledBrightness[numLEDs] = {0};
 
   // Gradually increase the brightness of each LED to create a rainbow effect.
-  for (unsigned short offset = 1; offset < numLEDs; offset++) {
-    for (unsigned short i = 0; i < numLEDs; i++) {
+  for (uint16_t offset = 1; offset < numLEDs; offset++) {
+    for (uint16_t i = 0; i < numLEDs; i++) {
       if (i == startLed) continue; // Skip the start LED.
 
       // Calculate the distance from the current LED to the start LED.
-      unsigned int distance = abs(static_cast<int>(i) - static_cast<int>(startLed));
+      uint16_t distance = abs(static_cast<int16_t>(i) - static_cast<int16_t>(startLed));
 
       // If the current LED is within the offset, adjust its brightness and color.
       if (distance <= offset) {
-        int hueOffset = distance * 5; // Determine the color spread in the rainbow.
-        unsigned char hue = (startHue + hueOffset) % 256;
+        int16_t hueOffset = distance * 5; // Determine the color spread in the rainbow.
+        uint8_t hue = startHue + hueOffset;
         ledBrightness[i] = min(ledBrightness[i] + 20, 255);
         leds[i] = CHSV(hue, 255, ledBrightness[i]);
       }
@@ -99,17 +99,17 @@ void rainbowFirework(unsigned short numLEDs) {
   }
 
   // Final brightness increase step for all LEDs.
-  for (int step = 0; step < 255; step += 5) {
+  for (int16_t step = 0; step < 255; step += 5) {
     bool updateNeeded = false;
-    for (unsigned int i = 0; i < numLEDs; i++) {
+    for (uint16_t i = 0; i < numLEDs; i++) {
       if (i == startLed) continue; // Skip the start LED.
 
       // Increase brightness only if not already at maximum.
       if (ledBrightness[i] < 255) {
         ledBrightness[i] = min(ledBrightness[i] + 5, 255);
-        unsigned int distance = abs(static_cast<int>(i) - static_cast<int>(startLed));
-        unsigned int hueOffset = distance * 5; // Determine the color spread in the rainbow.
-        unsigned char hue = (startHue + hueOffset) % 256;
+        uint16_t distance = abs(static_cast<int16_t>(i) - static_cast<int16_t>(startLed));
+        uint16_t hueOffset = distance * 5; // Determine the color spread in the rainbow.
+        uint8_t hue = startHue + hueOffset;
         leds[i] = CHSV(hue, 255, ledBrightness[i]);
         updateNeeded = true;
       }

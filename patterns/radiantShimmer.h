@@ -10,9 +10,9 @@ DEFINE_GRADIENT_PALETTE(brightHeatMap_gp_radiantShimmer) {
 
 extern const CRGBPalette16 brightHeatMapRadiantShimmer = brightHeatMap_gp_radiantShimmer;
 
-void radiantShimmer(short numLED) {
-  unsigned char sinBeatPos1 = beatsin16(15, 0, numLED - 1); // Adjusting speed
-  unsigned char sinBeatPos2 = beatsin16(45, 0, numLED - 1); // Creating more dynamic changes
+void radiantShimmer(uint16_t numLED) {
+  uint16_t sinBeatPos1 = beatsin16(15, 0, numLED - 1); // Adjusting speed
+  uint16_t sinBeatPos2 = beatsin16(45, 0, numLED - 1); // Creating more dynamic changes
 
   fill_palette(leds, numLED, (sinBeatPos1 + sinBeatPos2) / 2, 8, brightHeatMapRadiantShimmer, 255, LINEARBLEND);
 

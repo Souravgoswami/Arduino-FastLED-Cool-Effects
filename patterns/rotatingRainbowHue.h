@@ -1,6 +1,6 @@
-void rotatingRainbowHue(unsigned short numLED) {
-  static unsigned short rotatingRainbowStartHue = 0;
+void rotatingRainbowHue(uint16_t numLED) {
+  static uint8_t rotatingRainbowStartHue = 0;
 
   fill_rainbow(leds, numLED, rotatingRainbowStartHue, 7);
-  rotatingRainbowStartHue = (rotatingRainbowStartHue + 1) % 256;
+  rotatingRainbowStartHue++;
 }

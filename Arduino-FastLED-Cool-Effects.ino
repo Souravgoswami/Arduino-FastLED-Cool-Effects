@@ -147,7 +147,7 @@ volatile struct LEDData {
 
 void buttonPushEvent();
 
-unsigned long brightColours[] = {
+uint32_t brightColours[] = {
   0xff5555,  // Light Red
   0x00ff55,  // Bright Green
   0x00ff22,  // Vivid Green
@@ -159,9 +159,9 @@ unsigned long brightColours[] = {
   0xffaa00,  // Orange
   0xff4400,  // Deep Orange
 };
-const unsigned char brightColoursLen = sizeof(brightColours) / sizeof(brightColours[0]);
+const uint8_t brightColoursLen = sizeof(brightColours) / sizeof(brightColours[0]);
 
-unsigned long meteorColors[] = {
+uint32_t meteorColors[] = {
   0xFF4500,  // Orange Red
   0xFFD700,  // Gold
   0xFF8C00,  // Dark Orange
@@ -181,10 +181,10 @@ unsigned long meteorColors[] = {
   0xFFA07A,  // Light Salmon
   0xFF7F50   // Coral
 };
-const unsigned char meteorColoursLen = sizeof(meteorColors) / sizeof(meteorColors[0]);
+const uint8_t meteorColoursLen = sizeof(meteorColors) / sizeof(meteorColors[0]);
 
-void shutDown(int shutDownAnimDelay) {
-  for (unsigned char i = 0; i < ledData.numLEDTotal; ++i) {
+void shutDown(uint16_t shutDownAnimDelay) {
+  for (uint16_t i = 0; i < ledData.numLEDTotal; ++i) {
     leds[i] = (CRGB)0x0;
     FastLED.show();
     FastLED.delay(shutDownAnimDelay);
@@ -200,16 +200,15 @@ void shutDown(int shutDownAnimDelay) {
  *
  * @param numLEDTotal The total number of LEDs to be represented by the indicators.
  */
-void showLEDCount(unsigned short numLEDTotal) {
-  unsigned char indicators = numLEDTotal >= 10 ? numLEDTotal / 10 : numLEDTotal;
+void showLEDCount(uint16_t numLEDTotal) {
+  uint8_t indicators = numLEDTotal >= 10 ? numLEDTotal / 10 : numLEDTotal;
 
   // Fade in steps
-  unsigned short stepFactor = indicators * 2;
+  uint16_t stepFactor = indicators * 2;
 
-  for (int i = 0; i < indicators; ++i) {
+  for (uint8_t i = 0; i < indicators; ++i) {
     leds[i] = CRGB::White;
-
-    unsigned short step = 0;
+    uint16_t step = 0;
 
     while (true) {
       if (step > 255) break;
@@ -223,10 +222,10 @@ void showLEDCount(unsigned short numLEDTotal) {
     }
   }
 
-  unsigned short flashDurationOnFactor = 1250;
-  unsigned short flashDurationOffFactor = 625;
+  uint16_t flashDurationOnFactor = 1250;
+  uint16_t flashDurationOffFactor = 625;
 
-  for (unsigned char flash = 0; flash < indicators; ++flash) {
+  for (uint8_t flash = 0; flash < indicators; ++flash) {
     // Flash the last LED
     leds[indicators - 1] = CRGB::Black;
     FastLED.show();
@@ -493,6 +492,7 @@ void loop() {
     rainbow2(totalLEDCount, 6);
     FastLED.show();
   } else if (selectedDesign == 20) {
+    // TODO Remove rainbowSmash
     rainbowSmash(totalLEDCount);
     FastLED.show();
     FastLED.delay(15);
@@ -537,7 +537,7 @@ void loop() {
     }
     FastLED.show();
   } else if (selectedDesign == 34) {
-    int meteorColourIndex = rand() % meteorColoursLen;
+    int16_t meteorColourIndex = rand() % meteorColoursLen;
     uint32_t meteorColour = meteorColors[meteorColourIndex];
     meteorRain(meteorColour, totalLEDCount);
   } else if (selectedDesign == 35) {

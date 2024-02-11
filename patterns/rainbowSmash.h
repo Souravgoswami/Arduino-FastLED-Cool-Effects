@@ -1,22 +1,21 @@
 // Define the structure for holding the rainbow smash effect data
 struct RainbowSmashData {
-  uint8_t hue = 0;
-  uint8_t offset = 0;
-  uint8_t maxBrightness = 255;
-  float sineWaveProgress = 0.0;
   // delayConst is calculated to maintain a consistent animation speed regardless of the number of LEDs.
   // It is inversely proportional to the number of LEDs to ensure uniform animation timing.
   // The formula used is: delayConst = (16.5 * 100) / numLEDs.
   // This results in a delay of 16.5 ms for 100 LEDs, 8.25 ms for 50 LEDs, and 33 ms for 200 LEDs.
-  float delayConst = 1650; // (16.5 * 100) or (1.65 * 1000)
-
-} __attribute__((packed));
+  const float delayConst = 1650; // (16.5 * 100) or (1.65 * 1000)
+  float sineWaveProgress = 0.0;
+  uint8_t hue = 0;
+  uint8_t offset = 0;
+  const uint8_t maxBrightness = 255;
+};
 
 // Create an instance of the structure
 RainbowSmashData rainbowSmashData;
 
 // Function to create the rainbow smash effect with fading in and out
-void rainbowSmash(int numLEDs) {
+void rainbowSmash(uint16_t numLEDs) {
   // Define minimum and maximum offset
   const uint8_t minOffset = numLEDs / 10;
   const uint8_t maxOffset = numLEDs / 5;
@@ -35,15 +34,18 @@ void rainbowSmash(int numLEDs) {
   fadeToBlackBy(leds, numLEDs, 20);
 
   // Calculate starting points for the segments
-  int leftStart = rainbowSmashData.offset;
-  int rightStart = numLEDs - segmentLength - rainbowSmashData.offset;
+  uint16_t leftStart = rainbowSmashData.offset;
+  uint16_t rightStart = numLEDs - segmentLength - rainbowSmashData.offset;
 
   // Ensure the segments don't overlap or go out of bounds
-  leftStart = constrain(leftStart, 0, numLEDs / 2);
+  if (leftStart + segmentLength > numLEDs / 2) {
+    leftStart = max(0, (int)numLEDs / 2 - (int)segmentLength);
+  }
+
   rightStart = constrain(rightStart, numLEDs / 2, numLEDs - segmentLength);
 
   // Fill the segments with a rainbow pattern
-  for (int i = 0; i < segmentLength; i++) {
+  for (int16_t i = 0; i < segmentLength; i++) {
     uint8_t brightness = rainbowSmashData.maxBrightness * (i + 1) / segmentLength;
     uint8_t inverseBrightness = rainbowSmashData.maxBrightness * (segmentLength - i) / segmentLength;
 

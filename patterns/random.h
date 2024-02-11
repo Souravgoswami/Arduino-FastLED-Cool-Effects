@@ -2,34 +2,40 @@
 // For example:
 //	Invalid: g - g - r - b - b - g
 //	Valid: g - r - b - r - b - g
-void arrayShuffleUniqColoursEffect(const unsigned long *brightColours, unsigned char length, CRGB *dest, unsigned char dest_length) {
+void arrayShuffleUniqColoursEffect(const uint32_t *brightColours, uint8_t length, CRGB *dest, uint8_t dest_length) {
   if (length > 1) {
-    unsigned long lastColor = 0xFFFFFFFF; // An unlikely color value
+    uint32_t lastColor = 0xFFFFFFFF; // An unlikely color value
 
-    for(unsigned char i = 0; i < dest_length; ++i) {
-      unsigned long newColor;
-      unsigned char attempts = 0;
+    for(uint8_t i = 0; i < dest_length; ++i) {
+      uint32_t newColor;
+      uint8_t attempts = 0;
       do {
         newColor = brightColours[rand() % length];
         attempts++;
-        if (attempts > 10) { // Limit attempts to 10
-          newColor = (lastColor + 1) % length; // Fallback strategy
+        // Fallback strategy after 10 attempts
+        if (attempts > 10) {
+          // Find a color that is different from the last color
+          for (uint8_t j = 0; j < length; ++j) {
+            if (brightColours[j] != lastColor) {
+              newColor = brightColours[j];
+              break;
+            }
+          }
           break;
         }
       } while(newColor == lastColor);
 
-      dest[i] = newColor;
+      dest[i] = CRGB(newColor); // Assuming CRGB accepts a uint32_t color value
       lastColor = newColor;
     }
   }
 
   FastLED.show();
 }
+void rotateBrightColours(uint32_t *ary, uint8_t length, uint16_t numLED) {
+  uint8_t colIndex = 0;
 
-void rotateBrightColours(unsigned long *ary, unsigned char length, int numLED) {
-  unsigned char colIndex = 0;
-
-  for(unsigned char i = 0; i < numLED; ++i) {
+  for(uint16_t i = 0; i < numLED; ++i) {
     if (colIndex == length) colIndex = 0;
     leds[i] = ary[colIndex];
     colIndex += 1;
@@ -40,12 +46,12 @@ void rotateBrightColours(unsigned long *ary, unsigned char length, int numLED) {
   arrayRotate(ary, length);
 }
 
-void fadeBetweenColors(CRGB *fromColors, CRGB *toColors, unsigned int length, unsigned short numLEDs, int fadeDuration) {
-  int stepSize = 10;
+void fadeBetweenColors(CRGB *fromColors, CRGB *toColors, uint8_t length, uint16_t numLEDs, uint16_t fadeDuration) {
+  uint8_t stepSize = 10;
 
-  for (int step = 0; step <= 100; step += stepSize) {
-    for (unsigned char i = 0; i < numLEDs; ++i) {
-      unsigned char fromIndex = i % length;
+  for (int16_t step = 0; step <= 100; step += stepSize) {
+    for (uint16_t i = 0; i < numLEDs; ++i) {
+      uint8_t fromIndex = i % length;
       CRGB fromColor = fromColors[fromIndex];
       CRGB toColor = toColors[fromIndex];
       leds[i] = blend(fromColor, toColor, step);
@@ -56,13 +62,13 @@ void fadeBetweenColors(CRGB *fromColors, CRGB *toColors, unsigned int length, un
   }
 }
 
-void rotateBrightColoursSmooth(unsigned long *ary, unsigned char length, int numLED) {
+void rotateBrightColoursSmooth(uint32_t *ary, uint8_t length, uint16_t numLED) {
   CRGB toColours[numLED];
-  unsigned char colIndex = 0;
-  unsigned long fadeDurationFactor = 125000;
-  unsigned int fadeDuration = fadeDurationFactor / numLED;
+  uint8_t colIndex = 0;
+  uint32_t fadeDurationFactor = 125000;
+  uint16_t fadeDuration = fadeDurationFactor / numLED;
 
-  for(unsigned char i = 0; i < numLED; ++i) {
+  for(uint16_t i = 0; i < numLED; ++i) {
     toColours[i] = ary[colIndex];
     colIndex = (colIndex + 1) % length;
   }

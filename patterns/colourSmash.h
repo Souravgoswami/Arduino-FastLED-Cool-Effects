@@ -31,37 +31,36 @@ DEFINE_GRADIENT_PALETTE(brightHeatMap_gp_colourSmash2) {
 
 struct ColourSmashData {
   bool colourSmashInitialized = false;
-  CRGBPalette16 brightHeatMapColourSmash = brightHeatMap_gp_colourSmash;
-  CRGBPalette16 brightHeatMapColourSmash2 = brightHeatMap_gp_colourSmash2;
-  unsigned int colourIndex[MAX_LED_COUNT];
+  const CRGBPalette16 brightHeatMapColourSmash = brightHeatMap_gp_colourSmash;
+  const CRGBPalette16 brightHeatMapColourSmash2 = brightHeatMap_gp_colourSmash2;
+  uint16_t colourIndex[MAX_LED_COUNT];
 };
 
 struct ColourSmashData colourSmashData;
 
-void runColourSmash(CRGBPalette16 palette, unsigned short numLED, int everyNMilliseconds) {
+void runColourSmash(CRGBPalette16 palette, uint16_t numLED, int16_t everyNMilliseconds) {
   if (!colourSmashData.colourSmashInitialized) {
-    for (unsigned int i = 0; i < numLED; ++i) {
+    for (uint16_t i = 0; i < numLED; ++i) {
       colourSmashData.colourIndex[i] = generateRandomBrightColour();
     }
     colourSmashData.colourSmashInitialized = true;
   }
 
-  for (unsigned int i = 0; i < numLED; ++i) {
+  for (uint16_t i = 0; i < numLED; ++i) {
     leds[i] = ColorFromPalette(palette, colourSmashData.colourIndex[i], 0xff);
   }
 
   EVERY_N_MILLISECONDS(everyNMilliseconds) {
-    for (unsigned int i = 0; i < numLED; ++i) {
+    for (uint16_t i = 0; i < numLED; ++i) {
       colourSmashData.colourIndex[i] = (colourSmashData.colourIndex[i] + 1) % 256;
     }
   }
 }
 
-
-void colourSmash(short numLED) {
+void colourSmash(uint16_t numLED) {
   runColourSmash(colourSmashData.brightHeatMapColourSmash, numLED, 5);
 }
 
-void colourSmash2(short numLED) {
+void colourSmash2(uint16_t numLED) {
   runColourSmash(colourSmashData.brightHeatMapColourSmash2, numLED, 20);
 }
