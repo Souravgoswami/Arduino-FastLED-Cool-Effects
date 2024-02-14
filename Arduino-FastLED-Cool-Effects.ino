@@ -11,10 +11,6 @@
   #define BOARD_ARDUINO
 #endif
 
-#ifdef BOARD_ESP8266
-  #define FASTLED_ALL_PINS_HARDWARE_SPI
-#endif
-
 #include <FastLED.h>
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3001000)
