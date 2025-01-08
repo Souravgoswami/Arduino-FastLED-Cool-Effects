@@ -38,7 +38,7 @@ void cylon2(uint16_t numLEDs) {
     for (uint16_t j = 0; j < numLEDs; ++j) {
       uint8_t hue = cylon2Data.baseHue + (j * 256 / numLEDs);
       leds[j] = CHSV(hue, 255, cylon2Data.brightness[j]);
-      cylon2Data.brightness[j] = (cylon2Data.brightness[j] * 245) / 255;
+      cylon2Data.brightness[j] = qsub8(cylon2Data.brightness[j], 3);
     }
 
     FastLED.show();
@@ -55,7 +55,7 @@ void cylon2(uint16_t numLEDs) {
     for (uint16_t j = 0; j < numLEDs; ++j) {
       uint8_t hue = cylon2Data.baseHue + (j * 256 / numLEDs);
       leds[j] = CHSV(hue, 255, cylon2Data.brightness[j]);
-      cylon2Data.brightness[j] = (cylon2Data.brightness[j] * 245) / 255;
+      cylon2Data.brightness[j] = qsub8(cylon2Data.brightness[j], 3);
     }
 
     FastLED.show();
