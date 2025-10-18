@@ -7,13 +7,11 @@
 // Default 120, suggested range 50-200.
 
 struct Fire2012Data {
-  const bool gReverseDirection = false;
-  const uint8_t cooling = 55;
-  const uint8_t fps = 60;
-  const uint8_t sparking = 120;
+  static constexpr bool gReverseDirection = false;
+  static constexpr uint8_t fps = 60;
+  static constexpr uint8_t cooling = 55;
+  static constexpr uint8_t sparking = 120;
 };
-
-Fire2012Data fire2012Data;
 
 // Fire2012 by Mark Kriegsman, July 2012
 // as part of "Five Elements" shown here: http://youtu.be/knWiGsmgycY
@@ -49,7 +47,7 @@ void Fire2012(uint16_t numLEDs) {
 
   // Step 1.  Cool down every cell a little
   for(uint16_t i = 0; i < numLEDs; i++) {
-    heat[i] = qsub8(heat[i],  random8(0, ((fire2012Data.cooling * 10) / numLEDs) + 2));
+    heat[i] = qsub8(heat[i],  random8(0, ((Fire2012Data::cooling * 10) / numLEDs) + 2));
   }
 
   // Step 2.  Heat from each cell drifts 'up' and diffuses a little
@@ -58,7 +56,7 @@ void Fire2012(uint16_t numLEDs) {
   }
 
   // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-  if(random8() < fire2012Data.sparking) {
+  if(random8() < Fire2012Data::sparking) {
     uint8_t y = random8(7);
     heat[y] = qadd8(heat[y], random8(160,255));
   }
@@ -67,7 +65,7 @@ void Fire2012(uint16_t numLEDs) {
   for(uint16_t j = 0; j < numLEDs; j++) {
     CRGB color = HeatColor(heat[j]);
     int16_t pixelnumber;
-    if(fire2012Data.gReverseDirection) {
+    if(Fire2012Data::gReverseDirection) {
       pixelnumber = (numLEDs - 1) - j;
     } else {
       pixelnumber = j;
@@ -83,5 +81,5 @@ void fire2012(uint16_t numLEDs) {
   Fire2012(numLEDs);
 
   FastLED.show();
-  FastLED.delay(1000 / fire2012Data.fps);
+  FastLED.delay(1000 / Fire2012Data::fps);
 }

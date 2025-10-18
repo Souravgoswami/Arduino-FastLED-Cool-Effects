@@ -31,6 +31,8 @@ void rainbowFirework(uint16_t numLEDs) {
 
   // Gradually fade all LEDs to black.
   for (uint16_t i = 0; i < 256; i++) {
+    if (ledData.modeButtonPressed) return;
+
     fadeToBlackBy(leds, numLEDs, 1);
     FastLED.show();
     FastLED.delay(5);
@@ -53,6 +55,8 @@ void rainbowFirework(uint16_t numLEDs) {
   // Create a fizzling effect on the start LED.
   uint16_t flashDuration = random8(10, 25); // Duration for the fizzling effect.
   for(uint16_t i = 0; i < flashDuration; ++i) {
+    if (ledData.modeButtonPressed) return;
+
     // Randomly alternate the color of the start LED between white and its hue.
     leds[startLed] = (random8(10) >= 5) ? CRGB::White : CRGB(CHSV(startHue, 255, 255));
     FastLED.show();
@@ -62,6 +66,8 @@ void rainbowFirework(uint16_t numLEDs) {
   // Create a rapidly increasing flash rate effect on the start LED.
   uint16_t rapidFlashDuration = random8(10, 20); // Duration for the rapid flashing.
   for (uint16_t i = 0; i < rapidFlashDuration; ++i) {
+    if (ledData.modeButtonPressed) return;
+
     leds[startLed] = (i % 2 == 0) ? CRGB::White : CRGB(CHSV(startHue, 255, 255));
     FastLED.show();
     FastLED.delay(i);
@@ -77,6 +83,8 @@ void rainbowFirework(uint16_t numLEDs) {
 
   // Gradually increase the brightness of each LED to create a rainbow effect.
   for (uint16_t offset = 1; offset < numLEDs; offset++) {
+    if (ledData.modeButtonPressed) return;
+
     for (uint16_t i = 0; i < numLEDs; i++) {
       if (i == startLed) continue; // Skip the start LED.
 

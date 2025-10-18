@@ -1,6 +1,6 @@
 // List of patterns to cycle through.  Each is defined as a separate function below.
 struct DemoReel100Data {
-  uint16_t fps = 120;
+  static constexpr uint16_t fps = 120;
   uint8_t gCurrentPatternNumber = 0;
   uint8_t gHue = 0; // rotating "base color" used by many of the patterns
 };
