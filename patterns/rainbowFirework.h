@@ -85,7 +85,7 @@ void rainbowFirework(uint16_t numLEDs) {
   for (uint16_t offset = 1; offset < numLEDs; offset++) {
     if (ledData.modeButtonPressed) return;
 
-    for (uint16_t i = 0; i < numLEDs; i++) {
+    for (uint8_t i = 0; i < numLEDs; i++) {
       if (i == startLed) continue; // Skip the start LED.
 
       // Calculate the distance from the current LED to the start LED.
@@ -109,7 +109,7 @@ void rainbowFirework(uint16_t numLEDs) {
   // Final brightness increase step for all LEDs.
   for (int16_t step = 0; step < 255; step += 5) {
     bool updateNeeded = false;
-    for (uint16_t i = 0; i < numLEDs; i++) {
+    for (uint8_t i = 0; i < numLEDs; i++) {
       if (i == startLed) continue; // Skip the start LED.
 
       // Increase brightness only if not already at maximum.

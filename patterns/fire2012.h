@@ -46,7 +46,7 @@ void Fire2012(uint16_t numLEDs) {
   uint8_t heat[MAX_LED_COUNT];
 
   // Step 1.  Cool down every cell a little
-  for(uint16_t i = 0; i < numLEDs; i++) {
+  for(uint8_t i = 0; i < numLEDs; i++) {
     heat[i] = qsub8(heat[i],  random8(0, ((Fire2012Data::cooling * 10) / numLEDs) + 2));
   }
 

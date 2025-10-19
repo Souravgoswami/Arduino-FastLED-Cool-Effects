@@ -66,7 +66,7 @@ void staticRainbowChase(CRGB* leds, uint16_t numLEDs) {
     }
 
     // Apply the brightness and color to the LEDs
-    for (uint32_t i = 0; i < numLEDs; i++) {
+    for (uint8_t i = 0; i < numLEDs; i++) {
       uint8_t groupIndex = i % 3; // Determine the group of the current LED
 
       // Calculate a static hue value for each LED to create a stationary rainbow pattern across the LED strip.
@@ -105,7 +105,7 @@ void dynamicRainbowChase(CRGB* leds, uint16_t numLEDs) {
     }
 
     // Apply the brightness and color to the LEDs
-    for (uint16_t i = 0; i < numLEDs; i++) {
+    for (uint8_t i = 0; i < numLEDs; i++) {
       uint16_t groupIndex = i % 3; // Determine the group of the current LED
 
     // Calculate hue for each LED with an offset for creating a moving rainbow effect across the LED strip.

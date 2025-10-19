@@ -16,7 +16,7 @@ void rainbowWave(uint8_t wait, uint16_t numLEDs) {
   static uint8_t hue = 0;
   uint8_t time = millis() / 25;
 
-  for(uint16_t i = 0; i < numLEDs; i++) {
+  for(uint8_t i = 0; i < numLEDs; i++) {
     // Calculate the base hue with a smooth transition
     uint8_t baseHue = (i * 10) + hue;
 

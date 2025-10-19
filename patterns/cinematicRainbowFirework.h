@@ -80,7 +80,7 @@ void cinematicRainbowFirework(uint16_t numLEDs) {
   for (uint16_t offset = 1; offset < numLEDs; offset++) {
     if (ledData.modeButtonPressed) return;
 
-    for (uint16_t i = 0; i < numLEDs; i++) {
+    for (uint8_t i = 0; i < numLEDs; i++) {
       if (i == startLed) continue; // Skip the start LED.
 
       // Calculate the distance from the current LED to the start LED.
@@ -108,7 +108,7 @@ void cinematicRainbowFirework(uint16_t numLEDs) {
   // Final brightness increase step for all LEDs.
   for (int16_t step = 0; step < 255; step += 5) {
     bool updateNeeded = false;
-    for (uint16_t i = 0; i < numLEDs; i++) {
+    for (uint8_t i = 0; i < numLEDs; i++) {
       if (i == startLed) continue; // Skip the start LED.
 
       // Increase brightness only if not already at maximum.
@@ -134,7 +134,7 @@ void cinematicRainbowFirework(uint16_t numLEDs) {
 
   // --- Store current rainbow colors BEFORE glitter ---
   CRGB baseColors[numLEDs];
-  for (uint16_t i = 0; i < numLEDs; i++) {
+  for (uint8_t i = 0; i < numLEDs; i++) {
     baseColors[i] = leds[i];
   }
 
@@ -144,7 +144,7 @@ void cinematicRainbowFirework(uint16_t numLEDs) {
   while (millis() - hueRotateStart < CinematicRainbowFireworkData::hueRotateDuration) {
     if (ledData.modeButtonPressed) return;
 
-    for (uint16_t i = 0; i < numLEDs; i++) {
+    for (uint8_t i = 0; i < numLEDs; i++) {
       CHSV hsv = rgb2hsv_approximate(leds[i]);
       hsv.hue += CinematicRainbowFireworkData::rotatingHueIncrement;
       leds[i] = hsv;
@@ -157,13 +157,13 @@ void cinematicRainbowFirework(uint16_t numLEDs) {
   uint32_t phaseStart = millis();
 
   // Store base colors so we can restore the hue structure each frame
-  for (uint16_t i = 0; i < numLEDs; i++) {
+  for (uint8_t i = 0; i < numLEDs; i++) {
     baseColors[i] = leds[i];
   }
 
   while ((uint32_t)(millis() - phaseStart) < CinematicRainbowFireworkData::glitterBombWithHuePhaseDuration) {
     // --- Step 1: Rotate hues across all LEDs ---
-    for (uint16_t i = 0; i < numLEDs; i++) {
+    for (uint8_t i = 0; i < numLEDs; i++) {
       CHSV hsv = rgb2hsv_approximate(baseColors[i]);
       hsv.hue += ((millis() - phaseStart) / 10) + CinematicRainbowFireworkData::rotatingHueIncrement; // smoothly advancing hue
       leds[i] = hsv;
@@ -207,7 +207,7 @@ void cinematicRainbowFirework(uint16_t numLEDs) {
 
     uint32_t currentTime = millis();
 
-    for (uint16_t i = 0; i < numLEDs; i++) {
+    for (uint8_t i = 0; i < numLEDs; i++) {
       // Position mirrored around the center (waves clashing in middle)
       float wavePos = abs(i - (numLEDs / 2.0f));
 
@@ -229,7 +229,7 @@ void cinematicRainbowFirework(uint16_t numLEDs) {
   uint32_t sparkleStart = millis();
 
   // Generate a new base rainbow palette to pull colors from
-  for (uint16_t i = 0; i < numLEDs; i++) {
+  for (uint8_t i = 0; i < numLEDs; i++) {
     uint8_t hue = (i * 256 / numLEDs);
     baseColors[i] = CHSV(hue, 255, 255);
   }

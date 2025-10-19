@@ -10,7 +10,7 @@ void arrayShuffleUniqColoursEffect(const uint32_t *brightColours, uint8_t length
       uint32_t newColor;
       uint8_t attempts = 0;
       do {
-        newColor = brightColours[rand() % length];
+        newColor = brightColours[random8(length)];
         attempts++;
         // Fallback strategy after 10 attempts
         if (attempts > 10) {
@@ -51,7 +51,7 @@ void fadeBetweenColors(CRGB *fromColors, CRGB *toColors, uint8_t length, uint16_
   constexpr uint8_t stepSize = 10;
 
   for (int16_t step = 0; step <= 100; step += stepSize) {
-    for (uint16_t i = 0; i < numLEDs; ++i) {
+    for (uint8_t i = 0; i < numLEDs; ++i) {
       uint8_t fromIndex = i % length;
       CRGB fromColor = fromColors[fromIndex];
       CRGB toColor = toColors[fromIndex];

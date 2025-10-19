@@ -7,7 +7,7 @@ struct GradientChaseData {
 void gradientChaseClash(CRGB leds[], uint16_t numLEDs) {
   uint32_t currentTime = millis();
 
-  for (uint32_t i = 0; i < numLEDs; i++) {
+  for (uint8_t i = 0; i < numLEDs; i++) {
     // Calculate the position for the wave to start from both ends and clash in the middle
     float wavePosition = abs(i - (numLEDs / 2.0));
 
@@ -32,7 +32,7 @@ void gradientChaseClash(CRGB leds[], uint16_t numLEDs) {
 void gradientChase(CRGB leds[], uint16_t numLEDs, bool backwards) {
   uint32_t currentTime = millis();
 
-  for (uint32_t i = 0; i < numLEDs; i++) {
+  for (uint8_t i = 0; i < numLEDs; i++) {
     // Calculate wave-based brightness modulation
     uint8_t brightness = 127.5 + 127.5 * sin(i * 0.15 + currentTime / 250.0);
 

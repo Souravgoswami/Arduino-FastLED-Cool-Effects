@@ -27,7 +27,7 @@ void fallingRainbowSnowEffect(CRGB leds[], uint16_t numLEDs) {
   }
 
   // Dim all LEDs slightly to give the effect of falling
-  for (uint16_t i = 0; i < numLEDs; i++) {
+  for (uint8_t i = 0; i < numLEDs; i++) {
     leds[i].fadeToBlackBy(10);
   }
 

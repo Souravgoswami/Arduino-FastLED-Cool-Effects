@@ -30,6 +30,14 @@
   #error "DEFAULT_LED_COUNT cannot exceed MAX_LED_COUNT"
 #endif
 
+#if DEFAULT_LED_COUNT > 255
+  #error "DEFAULT_LED_COUNT cannot exceed 255. Ideally it should be <= MAX_LED_COUNT / 2"
+#endif
+
+#if MAX_LED_COUNT > 255
+  #error "MAX_LED_COUNT cannot exceed 255. Ideally it should be <= 200 and a multiple of DEFAULT_LED_COUNT (50 -> 100, 150, 200)"
+#endif
+
 #if defined(BOARD_ESP8266)
   #define EEPROM_SAVE_VALUE(address, value) EEPROM.write(address, value); EEPROM.commit();
 #else
@@ -48,7 +56,7 @@ volatile struct LEDData {
   uint32_t modeButtonActivatedTill = 0;
   uint32_t prevPressTime = 0;
   uint32_t scheduledEEPROMWriteTime = 0;
-  uint16_t numLEDTotal = DEFAULT_LED_COUNT;
+  uint8_t numLEDTotal = DEFAULT_LED_COUNT;
   uint8_t design = 0;
   bool hasUpdatedOnButtonPress = false;
   bool randomColoursSet = false;
@@ -92,9 +100,10 @@ volatile struct LEDData {
   }
 
   void updateLEDCount() {
+    const uint8_t prevValue = ledData.numLEDTotal;
     ledData.numLEDTotal += DEFAULT_LED_COUNT;
 
-    if (ledData.numLEDTotal > MAX_LED_COUNT) {
+    if (ledData.numLEDTotal < prevValue || ledData.numLEDTotal > MAX_LED_COUNT) {
       ledData.numLEDTotal = DEFAULT_LED_COUNT;
     }
 
@@ -178,7 +187,7 @@ const uint16_t meteorColors[] = {
 constexpr uint8_t meteorColoursLen = sizeof(meteorColors) / sizeof(meteorColors[0]);
 
 void shutDown(uint16_t shutDownAnimDelay) {
-  for (uint16_t i = 0; i < ledData.numLEDTotal; ++i) {
+  for (uint8_t i = 0; i < ledData.numLEDTotal; ++i) {
     leds[i] = (CRGB)0x0;
     FastLED.show();
     FastLED.delay(shutDownAnimDelay);

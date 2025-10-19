@@ -3,7 +3,7 @@ void rainbowWaterfallHueRotate(uint8_t waveLength, uint8_t speed, uint16_t numLE
   static int16_t position = 0; // Static variable to hold the current position of the wave
 
   // Loop through each LED to set its color and brightness
-  for (uint16_t i = 0; i < numLEDs; i++) {
+  for (uint8_t i = 0; i < numLEDs; i++) {
     // Calculate the hue for each LED, creating a rainbow that moves along the strip
     uint8_t hue = (i * 256 / numLEDs) + position;
     CRGB color = CHSV(hue, 255, 255); // Create color with full saturation and maximum brightness
@@ -30,7 +30,7 @@ void reverseRainbowWaterfallHueRotate(uint8_t waveLength, uint8_t speed, uint16_
   static int16_t position = 0; // Static variable to hold the current position of the wave
 
   // Loop through each LED to set its color and brightness
-  for (uint16_t i = 0; i < numLEDs; i++) {
+  for (uint8_t i = 0; i < numLEDs; i++) {
     // Calculate the hue for each LED, creating a rainbow that moves along the strip
     uint8_t hue = ((numLEDs - i) * 256 / numLEDs) + position;
     CRGB color = CHSV(hue, 255, 255); // Create color with full saturation and maximum brightness

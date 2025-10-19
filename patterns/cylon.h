@@ -6,7 +6,7 @@ struct Cylon2Data {
 void cylon(uint16_t numLEDs) {
   static uint8_t hue = 0;
 
-  for(uint16_t i = 0; i < numLEDs; ++i) {
+  for(uint8_t i = 0; i < numLEDs; ++i) {
     leds[i] = CHSV(hue++, 255, 255);
     FastLED.show();
 
@@ -30,7 +30,7 @@ void cylon(uint16_t numLEDs) {
 }
 
 void cylon2(uint16_t numLEDs) {
-  for (uint16_t i = 0; i < numLEDs; ++i) {
+  for (uint8_t i = 0; i < numLEDs; ++i) {
     // Light up the current LED with maximum brightness
     cylon2Data.brightness[i] = 255;
 

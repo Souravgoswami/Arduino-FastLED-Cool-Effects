@@ -1,7 +1,7 @@
 void rainbowWaterfall(uint8_t waveLength, uint8_t speed, uint16_t numLEDs) {
   static int16_t position = 0;
   // Create a moving "wave" effect by looping through each LED
-  for (uint16_t i = 0; i < numLEDs; i++) {
+  for (uint8_t i = 0; i < numLEDs; i++) {
     // Generate a rainbow color based on the LED's position and the current time
     uint8_t hue = ((i * 256) / numLEDs);
     CRGB color = CHSV(hue, 255, 255);
@@ -22,7 +22,7 @@ void rainbowWaterfall(uint8_t waveLength, uint8_t speed, uint16_t numLEDs) {
 void reverseRainbowWaterfall(uint8_t waveLength, uint8_t speed, uint16_t numLEDs) {
   static int16_t position = 0;
   // Create a moving "wave" effect by looping through each LED in reverse order
-  for (uint16_t i = 0; i < numLEDs; i++) {
+  for (uint8_t i = 0; i < numLEDs; i++) {
     // Generate a rainbow color based on the LED's position and the current time, reversed
     uint8_t hue = ((numLEDs - i) * 256 / numLEDs);
     CRGB color = CHSV(hue, 255, 255);

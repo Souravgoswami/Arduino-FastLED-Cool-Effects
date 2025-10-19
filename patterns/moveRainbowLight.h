@@ -5,7 +5,7 @@ void moveRainbowLight(uint16_t numLEDs, CRGB* leds) {
   static uint16_t moveDelayFactor = 1250 / numLEDs;
 
   // Fade all LEDs by a small amount to create the trailing effect
-  for (uint16_t i = 0; i < numLEDs; i++) {
+  for (uint8_t i = 0; i < numLEDs; i++) {
     leds[i].fadeToBlackBy(30); // Adjust fade value (0-255) to control trail length
   }
 
