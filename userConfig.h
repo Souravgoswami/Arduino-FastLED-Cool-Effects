@@ -31,7 +31,7 @@
 
 // Default brightness level of the LEDs (0-255).
 // Adjust this value to set the brightness to a comfortable level.
-#define BRIGHTNESS 30
+#define BRIGHTNESS 225
 
 /*
  * Button Handler Configuration
