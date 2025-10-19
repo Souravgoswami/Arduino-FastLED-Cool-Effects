@@ -30,16 +30,18 @@
 #define MILLIS_OVERFLOW_RESTART_MARGIN_MS 60000UL  // in ms; 1 minute before overflow
 #define MILLIS_OVERFLOW_RESTART_THRESHOLD ((uint64_t)(1ULL << 32) - MILLIS_OVERFLOW_RESTART_MARGIN_MS)
 
-#if DEFAULT_LED_COUNT > MAX_LED_COUNT
-  #error "DEFAULT_LED_COUNT cannot exceed MAX_LED_COUNT"
-#endif
-
 #if DEFAULT_LED_COUNT > 255
-  #error "DEFAULT_LED_COUNT cannot exceed 255. Ideally it should be <= MAX_LED_COUNT / 2"
+  #error "DEFAULT_LED_COUNT cannot exceed 255. Ideally it should be <= 200"
 #endif
 
-#if MAX_LED_COUNT > 255
-  #error "MAX_LED_COUNT cannot exceed 255. Ideally it should be <= 200 and a multiple of DEFAULT_LED_COUNT (50 -> 100, 150, 200)"
+#ifdef LED_CHAIN_TOGGLE_BUTTON
+  #if DEFAULT_LED_COUNT > MAX_LED_COUNT
+    #error "DEFAULT_LED_COUNT cannot exceed MAX_LED_COUNT"
+  #endif
+
+  #if MAX_LED_COUNT > 255
+    #error "MAX_LED_COUNT cannot exceed 255. Ideally it should be <= 200 and a multiple of DEFAULT_LED_COUNT (50 -> 100, 150, 200)"
+  #endif
 #endif
 
 #if defined(BOARD_ESP8266)
