@@ -120,10 +120,11 @@ volatile struct LEDData {
 
 #include "functions/arrayFunctions.h"
 #include "functions/randomBrightColour.h"
+#include "functions/expandColour.h"
 
 #include "patterns/colourSmash.h"
 #include "patterns/cylon.h"
-#include "patterns/cinematicRainbowFirework.h"
+#include "patterns/cinematicRainbowFirework.h"  // Depends on ledData.modeButtonPressed
 #include "patterns/demoReel100.h"
 #include "patterns/fallingSnow.h"
 #include "patterns/fire2012.h"
@@ -133,7 +134,7 @@ volatile struct LEDData {
 #include "patterns/pride.h"
 #include "patterns/rainbow2.h"
 #include "patterns/rainbowChasers.h"
-#include "patterns/rainbowFirework.h"
+#include "patterns/rainbowFirework.h"  // Depends on ledData.modeButtonPressed
 #include "patterns/rainbowWaterfall.h"
 #include "patterns/rainbowWaterfallHueRotate.h"
 #include "patterns/rainbowWave.h"
@@ -147,7 +148,7 @@ volatile struct LEDData {
 
 void buttonPushEvent();
 
-const uint32_t brightColours[] = {
+uint32_t brightColours[] = {
   0xff5555,  // Light Red
   0x00ff55,  // Bright Green
   0x00ff22,  // Vivid Green
@@ -161,25 +162,18 @@ const uint32_t brightColours[] = {
 };
 constexpr uint8_t brightColoursLen = sizeof(brightColours) / sizeof(brightColours[0]);
 
-const uint32_t meteorColors[] = {
-  0xFF4500,  // Orange Red
-  0xFFD700,  // Gold
-  0xFF8C00,  // Dark Orange
-  0xFFA500,  // Orange
-  0xFFFF00,  // Yellow
-  0xFF6347,  // Tomato
-  0xFF0000,  // Red
-  0xDC143C,  // Crimson
-  0xB22222,  // Fire Brick
-  0x8B0000,  // Dark Red
-  0x800000,  // Maroon
-  0xDAA520,  // Golden Rod
-  0xCD5C5C,  // Indian Red
-  0xF08080,  // Light Coral
-  0xE9967A,  // Dark Salmon
-  0xFA8072,  // Salmon
-  0xFFA07A,  // Light Salmon
-  0xFF7F50   // Coral
+const uint16_t meteorColors[] = {
+  0xF70,  // Orange
+  0xFF0,  // Yellow
+  0xF00,  // Red
+  0xD15,  // Crimson
+  0xFFF,   // White
+  0xF55,  // Light Red
+  0x0F4,  // Vivid Green
+  0x33F,  // Soft Blue
+  0x00F,  // Blue
+  0x0F0,  // Green
+  0x3EA,  // Teal
 };
 constexpr uint8_t meteorColoursLen = sizeof(meteorColors) / sizeof(meteorColors[0]);
 
@@ -328,6 +322,13 @@ uint8_t readCommonValueFromEEPROM(const uint8_t addresses[], uint8_t numAddresse
   } else {
     return finalValue; // Return the most common valid value
   }
+}
+
+// Use static inline to allow the compiler to inline it fully for speed and no call overhead
+static inline void showSolid(CRGB *ledArray, uint16_t count, uint16_t colour) {
+  uint32_t expandedColour = expandColour(colour);
+  fill_solid(ledArray, count, CRGB(expandedColour));
+  FastLED.show();
 }
 
 void setup() {
@@ -535,8 +536,8 @@ void loop() {
     }
     FastLED.show();
   } else if (selectedDesign == 34) {
-    int16_t meteorColourIndex = rand() % meteorColoursLen;
-    uint32_t meteorColour = meteorColors[meteorColourIndex];
+    uint8_t meteorColourIndex = random8(meteorColoursLen);
+    uint32_t meteorColour = expandColour(meteorColors[meteorColourIndex]);
     meteorRain(meteorColour, totalLEDCount);
   } else if (selectedDesign == 35) {
     pride(totalLEDCount);
@@ -549,38 +550,27 @@ void loop() {
   } else if (selectedDesign == 39) {
     fire2012(totalLEDCount);
   } else if (selectedDesign == 40) {
-    fill_solid(leds, totalLEDCount, 0xff5010);
-    FastLED.show();
+    showSolid(leds,totalLEDCount, 0xf51);
   } else if (selectedDesign == 41) {
-    fill_solid(leds, totalLEDCount, 0x008080);
-    FastLED.show();
+    showSolid(leds,totalLEDCount, 0x088);
   } else if (selectedDesign == 42) {
-    fill_solid(leds, totalLEDCount, 0x32cd32);
-    FastLED.show();
+    showSolid(leds,totalLEDCount, 0x3c3);
   } else if (selectedDesign == 43) {
-    fill_solid(leds, totalLEDCount, 0x00ffff);
-    FastLED.show();
+    showSolid(leds,totalLEDCount, 0x0ff);
   } else if (selectedDesign == 44) {
-    fill_solid(leds, totalLEDCount, 0xff50d6);
-    FastLED.show();
+    showSolid(leds,totalLEDCount, 0xf5d);
   } else if (selectedDesign == 45) {
-    fill_solid(leds, totalLEDCount, 0xff00ff);
-    FastLED.show();
+    showSolid(leds,totalLEDCount, 0xf0f);
   } else if (selectedDesign == 46) {
-    fill_solid(leds, totalLEDCount, 0xffff00);
-    FastLED.show();
+    showSolid(leds,totalLEDCount, 0xff0);
   } else if (selectedDesign == 47) {
-    fill_solid(leds, totalLEDCount, 0xff2200);
-    FastLED.show();
+    showSolid(leds,totalLEDCount, 0xf20);
   } else if (selectedDesign == 48) {
-    fill_solid(leds, totalLEDCount, 0x00ff00);
-    FastLED.show();
+    showSolid(leds,totalLEDCount, 0x0f0);
   } else if (selectedDesign == 49) {
-    fill_solid(leds, totalLEDCount, 0x3ce3b4);
-    FastLED.show();
+    showSolid(leds,totalLEDCount, 0x3eb);
   } else if (selectedDesign == 50) {
-    fill_solid(leds, totalLEDCount, 0xff0011);
-    FastLED.show();
+    showSolid(leds,totalLEDCount, 0xf01);
   } else if (selectedDesign == 51) {
     rotateBrightColours(brightColours, brightColoursLen, totalLEDCount);
   } else {
