@@ -26,6 +26,10 @@
 // Users should not modify this section to ensure the proper functioning of LED behaviors as intended by the design.
 // Alterations here may disrupt the operation and compatibility with different LED types.
 
+// Restart MCU a little before millis() overflows (~49.7 days)
+#define MILLIS_OVERFLOW_RESTART_MARGIN_MS 60000UL  // in ms; 1 minute before overflow
+#define MILLIS_OVERFLOW_RESTART_THRESHOLD ((uint64_t)(1ULL << 32) - MILLIS_OVERFLOW_RESTART_MARGIN_MS)
+
 #if DEFAULT_LED_COUNT > MAX_LED_COUNT
   #error "DEFAULT_LED_COUNT cannot exceed MAX_LED_COUNT"
 #endif
@@ -66,11 +70,21 @@ volatile struct LEDData {
   bool flagWriteLEDCountToEEPROM = false;
 } ledData;
 
+// Declare reset function at address 0
+#ifndef BOARD_ESP8266
+  void (*resetFunc)(void) = 0;
+#endif
+
+void restartMCU() {
+  #if defined(BOARD_ESP8266)
+    ESP.restart();
+  #else
+    resetFunc();
+  #endif
+}
+
 #ifdef LED_CHAIN_TOGGLE_BUTTON
   CRGB leds[MAX_LED_COUNT];
-
-  //declare reset function at address 0
-  void (*resetFunc)(void) = 0;
 
   void writeLEDCountToEEPROM(uint16_t num) {
     EEPROM_SAVE_VALUE(EEPROM_LED_COUNT_ADDRESS_1, num);
@@ -395,9 +409,9 @@ void setup() {
 }
 
 void loop() {
-  uint8_t selectedDesign = ledData.design;
-  uint8_t totalLEDCount = ledData.numLEDTotal;
-  uint32_t currentTime = millis();
+  const uint8_t selectedDesign = ledData.design;
+  const uint8_t totalLEDCount = ledData.numLEDTotal;
+  const uint32_t currentTime = millis();
 
   #ifdef LED_CHAIN_TOGGLE_BUTTON
     if (ledData.flagWriteLEDCountToEEPROM) {
@@ -409,15 +423,16 @@ void loop() {
       digitalWrite(CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN, LED_ON);
       delay(50);
 
-      #if defined(BOARD_ESP8266)
-        ESP.restart();
-      #elif defined(BOARD_ARDUINO)
-        resetFunc();
-      #endif
+      restartMCU();
 
       return;
     }
   #endif
+
+  // Restart after ~48 days (to be safe)
+  if (currentTime > MILLIS_OVERFLOW_RESTART_THRESHOLD) {
+    restartMCU();
+  }
 
   if (ledData.modeButtonPressed && ledData.modeButtonActivatedTill < currentTime) {
     ledData.modeButtonPressed = false;
@@ -595,7 +610,7 @@ void loop() {
     // Prevent skipping effects
     if (!ledData.hasUpdatedOnButtonPress) return;
 
-    uint32_t currentTime = millis();
+    const uint32_t currentTime = millis();
 
     // Minimum delay between switch presses (sharing all the buttons)
     if (currentTime < ledData.prevPressTime) return;
