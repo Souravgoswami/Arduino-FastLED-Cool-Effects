@@ -154,22 +154,22 @@ void restartMCU() {
 #include "functions/expandColour.h"
 
 #include "patterns/colourSmash.h"
-#include "patterns/cylon.h"
-#include "patterns/cinematicRainbowFirework.h"  // Depends on ledData.modeButtonPressed
+#include "patterns/cylon.h"                     // Depends on ledData
+#include "patterns/cinematicRainbowFirework.h"  // Depends on ledData
 #include "patterns/demoReel100.h"
 #include "patterns/fallingSnow.h"
 #include "patterns/fire2012.h"
 #include "patterns/gradientChase.h"
-#include "patterns/meteorRain.h"                // Depends on ledData.modeButtonPressed
+#include "patterns/meteorRain.h"                // Depends on ledData
 #include "patterns/moveRainbowLight.h"
 #include "patterns/pride.h"
 #include "patterns/rainbow2.h"
 #include "patterns/rainbowChasers.h"
-#include "patterns/rainbowFirework.h"           // Depends on ledData.modeButtonPressed
+#include "patterns/rainbowFirework.h"           // Depends on ledData
 #include "patterns/rainbowWaterfall.h"
 #include "patterns/rainbowWaterfallHueRotate.h"
 #include "patterns/rainbowWave.h"
-#include "patterns/random.h"
+#include "patterns/random.h"                    // Depends on ledData
 #include "patterns/rotatingRainbowHue.h"
 #include "patterns/rotatingRainbowHueSegmented.h"
 #include "patterns/sinusoidalBeats.h"

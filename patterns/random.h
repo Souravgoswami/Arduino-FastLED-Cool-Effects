@@ -36,12 +36,15 @@ void arrayShuffleUniqColoursEffect(const uint32_t *brightColours, uint8_t length
 void rotateBrightColours(uint32_t *ary, uint8_t length, uint8_t numLED) {
   uint8_t colIndex = 0;
 
-  for(uint16_t i = 0; i < numLED; ++i) {
+  for(uint8_t i = 0; i < numLED; ++i) {
+    if (ledData.modeButtonPressed || ledData.ledChainToggleButtonPressed) return;
+
     if (colIndex == length) colIndex = 0;
     leds[i] = ary[colIndex];
     colIndex += 1;
-    FastLED.delay(10);
+
     FastLED.show();
+    FastLED.delay(10);
   }
 
   arrayRotate(ary, length);
@@ -51,6 +54,8 @@ void fadeBetweenColors(CRGB *fromColors, CRGB *toColors, uint8_t length, uint8_t
   constexpr uint8_t stepSize = 10;
 
   for (uint8_t step = 0; step <= 100; step += stepSize) {
+    if (ledData.modeButtonPressed || ledData.ledChainToggleButtonPressed) return;
+
     for (uint8_t i = 0; i < numLEDs; ++i) {
       uint8_t fromIndex = i % length;
       CRGB fromColor = fromColors[fromIndex];

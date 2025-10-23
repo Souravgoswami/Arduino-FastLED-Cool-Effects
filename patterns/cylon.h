@@ -7,6 +7,8 @@ void cylon(uint8_t numLEDs) {
   static uint8_t hue = 0;
 
   for(uint8_t i = 0; i < numLEDs; ++i) {
+    if (ledData.modeButtonPressed || ledData.ledChainToggleButtonPressed) return;
+
     leds[i] = CHSV(hue++, 255, 255);
     FastLED.show();
 
@@ -18,6 +20,8 @@ void cylon(uint8_t numLEDs) {
   }
 
   for(uint16_t i = numLEDs - 1; i > 0; --i) {
+    if (ledData.modeButtonPressed || ledData.ledChainToggleButtonPressed) return;
+
     leds[i] = CHSV(hue++, 255, 255);
     FastLED.show();
 
@@ -31,6 +35,8 @@ void cylon(uint8_t numLEDs) {
 
 void cylon2(uint8_t numLEDs) {
   for (uint8_t i = 0; i < numLEDs; ++i) {
+    if (ledData.modeButtonPressed || ledData.ledChainToggleButtonPressed) return;
+
     // Light up the current LED with maximum brightness
     cylon2Data.brightness[i] = 255;
 
@@ -47,12 +53,14 @@ void cylon2(uint8_t numLEDs) {
     cylon2Data.baseHue++;
   }
 
-  for (uint16_t i = numLEDs - 1; i > 0; --i) {
+  for (uint8_t i = numLEDs - 1; i > 0; --i) {
+    if (ledData.modeButtonPressed || ledData.ledChainToggleButtonPressed) return;
+
     // Light up the current LED with maximum brightness
     cylon2Data.brightness[i] = 255;
 
     // Gradually fade all LEDs and update their brightness
-    for (uint16_t j = 0; j < numLEDs; ++j) {
+    for (uint8_t j = 0; j < numLEDs; ++j) {
       uint8_t hue = cylon2Data.baseHue + (j * 256 / numLEDs);
       leds[j] = CHSV(hue, 255, cylon2Data.brightness[j]);
       cylon2Data.brightness[j] = qsub8(cylon2Data.brightness[j], 3);
