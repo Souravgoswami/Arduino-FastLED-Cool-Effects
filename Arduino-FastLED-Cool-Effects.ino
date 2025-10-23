@@ -30,6 +30,10 @@
 #define MILLIS_OVERFLOW_RESTART_MARGIN_MS 60000UL  // in ms; 1 minute before overflow
 #define MILLIS_OVERFLOW_RESTART_THRESHOLD ((uint64_t)(1ULL << 32) - MILLIS_OVERFLOW_RESTART_MARGIN_MS)
 
+#if DEFAULT_LED_COUNT < 1
+  #error "DEFAULT_LED_COUNT cannot be 0."
+#endif
+
 #if DEFAULT_LED_COUNT > 255
   #error "DEFAULT_LED_COUNT cannot exceed 255. Ideally it should be <= 200"
 #endif
@@ -67,6 +71,7 @@ volatile struct LEDData {
   bool hasUpdatedOnButtonPress = false;
   bool randomColoursSet = false;
   bool modeButtonPressed = false;
+  bool ledChainToggleButtonPressed = false;
   bool designChangeDetected = false;
   bool eepromWritePendingDelay = false;
   bool flagWriteLEDCountToEEPROM = false;
@@ -134,6 +139,7 @@ void restartMCU() {
       // Minimum delay between switch presses (sharing all the buttons)
       if (millis() < ledData.prevPressTime) return;
       digitalWrite(CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN, LED_ON);
+      ledData.ledChainToggleButtonPressed = true;
 
       ledData.prevPressTime = millis() + BUTTON_MIN_DELAY + 100000L;
       ledData.flagWriteLEDCountToEEPROM = true;
@@ -154,12 +160,12 @@ void restartMCU() {
 #include "patterns/fallingSnow.h"
 #include "patterns/fire2012.h"
 #include "patterns/gradientChase.h"
-#include "patterns/meteorRain.h"
+#include "patterns/meteorRain.h"                // Depends on ledData.modeButtonPressed
 #include "patterns/moveRainbowLight.h"
 #include "patterns/pride.h"
 #include "patterns/rainbow2.h"
 #include "patterns/rainbowChasers.h"
-#include "patterns/rainbowFirework.h"  // Depends on ledData.modeButtonPressed
+#include "patterns/rainbowFirework.h"           // Depends on ledData.modeButtonPressed
 #include "patterns/rainbowWaterfall.h"
 #include "patterns/rainbowWaterfallHueRotate.h"
 #include "patterns/rainbowWave.h"
@@ -192,7 +198,7 @@ const uint16_t meteorColors[] = {
   0xFF0,  // Yellow
   0xF00,  // Red
   0xD15,  // Crimson
-  0xFFF,   // White
+  0xFFF,  // White
   0xF55,  // Light Red
   0x0F4,  // Vivid Green
   0x33F,  // Soft Blue
@@ -307,7 +313,7 @@ uint8_t readDesignFromEEPROM() {
  * @return The most common valid value across the addresses, or a default value in the absence of consensus.
  */
 uint8_t readCommonValueFromEEPROM(const uint8_t addresses[], uint8_t numAddresses, uint8_t maxValue, uint16_t defaultValue) {
-  uint8_t values[4] = {0};
+  uint8_t values[4];
   for (uint8_t i = 0; i < numAddresses; i++) {
     values[i] = EEPROM.read(addresses[i]);
   }
@@ -393,7 +399,7 @@ void setup() {
 
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, ledData.numLEDTotal)
     .setCorrection(TypicalLEDStrip)
-    .setDither(BRIGHTNESS < 255);
+    .setDither(false);
 
   FastLED.setBrightness(BRIGHTNESS);
 
