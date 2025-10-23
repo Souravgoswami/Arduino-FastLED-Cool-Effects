@@ -1,4 +1,4 @@
-void sinusoidalBeatsWithBlur(uint16_t numLED) {
+void sinusoidalBeatsWithBlur(uint8_t numLED) {
   float scaleFactor = (numLED - 1) / 255.0;
 
   // Apply scaling factor to beatsin8 output

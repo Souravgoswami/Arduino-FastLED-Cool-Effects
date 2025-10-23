@@ -7,7 +7,7 @@ struct RainbowFireworkData {
 // Global instance of the structure to hold the animation state and timing.
 RainbowFireworkData rainbowFireworkData;
 
-void rainbowFirework(uint16_t numLEDs) {
+void rainbowFirework(uint8_t numLEDs) {
   // Check if the animation is currently in its delay period.
   if (rainbowFireworkData.inDelayedPeriod) {
     if (millis() > rainbowFireworkData.releaseDelayAt) {
@@ -21,7 +21,7 @@ void rainbowFirework(uint16_t numLEDs) {
 
   // Main animation logic.
   // Randomly select a starting LED for the animation.
-  uint8_t startLed = random(numLEDs);
+  uint8_t startLed = random8(numLEDs);
 
   // Define minimum and maximum delay factors for the animation effects.
   uint16_t delayFactorMin = 750; // 7.5ms for 1 LED, 1250 for 100
@@ -31,7 +31,7 @@ void rainbowFirework(uint16_t numLEDs) {
 
   // Gradually fade all LEDs to black.
   for (uint16_t i = 0; i < 256; i++) {
-    if (ledData.modeButtonPressed) return;
+    if (ledData.modeButtonPressed || ledData.ledChainToggleButtonPressed) return;
 
     fadeToBlackBy(leds, numLEDs, 1);
     FastLED.show();
@@ -55,7 +55,7 @@ void rainbowFirework(uint16_t numLEDs) {
   // Create a fizzling effect on the start LED.
   uint16_t flashDuration = random8(10, 25); // Duration for the fizzling effect.
   for(uint16_t i = 0; i < flashDuration; ++i) {
-    if (ledData.modeButtonPressed) return;
+    if (ledData.modeButtonPressed || ledData.ledChainToggleButtonPressed) return;
 
     // Randomly alternate the color of the start LED between white and its hue.
     leds[startLed] = (random8(10) >= 5) ? CRGB::White : CRGB(CHSV(startHue, 255, 255));
@@ -66,7 +66,7 @@ void rainbowFirework(uint16_t numLEDs) {
   // Create a rapidly increasing flash rate effect on the start LED.
   uint16_t rapidFlashDuration = random8(10, 20); // Duration for the rapid flashing.
   for (uint16_t i = 0; i < rapidFlashDuration; ++i) {
-    if (ledData.modeButtonPressed) return;
+    if (ledData.modeButtonPressed || ledData.ledChainToggleButtonPressed) return;
 
     leds[startLed] = (i % 2 == 0) ? CRGB::White : CRGB(CHSV(startHue, 255, 255));
     FastLED.show();
@@ -82,8 +82,8 @@ void rainbowFirework(uint16_t numLEDs) {
   uint8_t ledBrightness[numLEDs] = {0};
 
   // Gradually increase the brightness of each LED to create a rainbow effect.
-  for (uint16_t offset = 1; offset < numLEDs; offset++) {
-    if (ledData.modeButtonPressed) return;
+  for (uint8_t offset = 1; offset < numLEDs; offset++) {
+    if (ledData.modeButtonPressed || ledData.ledChainToggleButtonPressed) return;
 
     for (uint8_t i = 0; i < numLEDs; i++) {
       if (i == startLed) continue; // Skip the start LED.

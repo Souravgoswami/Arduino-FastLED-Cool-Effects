@@ -1,4 +1,4 @@
-void moveRainbowLight(uint16_t numLEDs, CRGB* leds) {
+void moveRainbowLight(uint8_t numLEDs, CRGB* leds) {
   static uint16_t position = 0; // Current position of the head of the light
   static int8_t direction = 1; // Direction of the light movement: 1 for forward, -1 for backward
   static uint8_t hue = 0; // Starting hue value for the rainbow effect

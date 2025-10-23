@@ -1,21 +1,24 @@
 struct GradientChaseData {
   uint8_t hue = 0;
   uint32_t nextHueUpdateTime = 0;
-  const uint16_t hueUpdateIntervalMillis = 1;
+  const uint8_t hueUpdateIntervalMillis = 1;
 } gradientChaseData;
 
-void gradientChaseClash(CRGB leds[], uint16_t numLEDs) {
+void gradientChaseClash(CRGB leds[], uint8_t numLEDs) {
   uint32_t currentTime = millis();
 
   for (uint8_t i = 0; i < numLEDs; i++) {
     // Calculate the position for the wave to start from both ends and clash in the middle
-    float wavePosition = abs(i - (numLEDs / 2.0));
+    float wavePos = fabs(i - (numLEDs / 2.0f));
 
     // Calculate wave-based brightness modulation with new wavePosition
-    uint8_t brightness = 127.5 + 127.5 * sin(wavePosition * 0.15 + currentTime / 250.0);
+    float wave = sin(wavePos * 0.15f + currentTime / 250.0f);
+    uint8_t brightness = 127.5f + 127.5f * wave;
 
-    // Calculate the hue based on position to create a gradient
-    uint8_t hue = gradientChaseData.hue + ((i * 256) / 15);
+    // Make hue cycle 3x across strip, and slowly rotate with time
+    uint8_t hue = gradientChaseData.hue
+                + ((uint32_t)i * 3 * 256 / numLEDs)
+                + (currentTime / 250);
 
     // Apply wave function to brightness and create gradient
     leds[i] = CHSV(hue, 255, brightness);
@@ -29,17 +32,16 @@ void gradientChaseClash(CRGB leds[], uint16_t numLEDs) {
   FastLED.show();
 }
 
-void gradientChase(CRGB leds[], uint16_t numLEDs, bool backwards) {
+void gradientChase(CRGB leds[], uint8_t numLEDs, bool backwards) {
   uint32_t currentTime = millis();
 
   for (uint8_t i = 0; i < numLEDs; i++) {
-    // Calculate wave-based brightness modulation
-    uint8_t brightness = 127.5 + 127.5 * sin(i * 0.15 + currentTime / 250.0);
+    float wave = sin(i * 0.15f + currentTime / 250.0f);
+    uint8_t brightness = 127.5f + 127.5f * wave;
 
-    // Calculate the hue offset based on position to create a gradient
-    uint8_t hue = gradientChaseData.hue + ((i * 256) / 15);
+    // Make hue cycle 3x across strip, and slowly rotate with time
+    uint8_t hue = gradientChaseData.hue + ((uint32_t)i * 3 * 256 / numLEDs) + (currentTime / 250);
 
-    // Apply wave function to brightness and create gradient
     leds[backwards ? i : numLEDs - 1 - i] = CHSV(hue, 255, brightness);
   }
 

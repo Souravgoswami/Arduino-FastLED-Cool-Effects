@@ -41,7 +41,7 @@ struct Fire2012Data {
 // feel of your fire: COOLING (used in step 1 above), and SPARKING (used
 // in step 3 above).
 
-void Fire2012(uint16_t numLEDs) {
+void Fire2012(uint8_t numLEDs) {
   // Array of temperature readings at each simulation cell
   uint8_t heat[MAX_LED_COUNT];
 
@@ -51,18 +51,18 @@ void Fire2012(uint16_t numLEDs) {
   }
 
   // Step 2.  Heat from each cell drifts 'up' and diffuses a little
-  for(uint16_t k = numLEDs - 1; k >= 2; k--) {
+  for(uint8_t k = numLEDs - 1; k >= 2; k--) {
     heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2]) / 3;
   }
 
   // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
   if(random8() < Fire2012Data::sparking) {
     uint8_t y = random8(7);
-    heat[y] = qadd8(heat[y], random8(160,255));
+    heat[y] = qadd8(heat[y], random8(160, 255));
   }
 
   // Step 4.  Map from heat cells to LED colors
-  for(uint16_t j = 0; j < numLEDs; j++) {
+  for(uint8_t j = 0; j < numLEDs; j++) {
     CRGB color = HeatColor(heat[j]);
     int16_t pixelnumber;
     if(Fire2012Data::gReverseDirection) {
@@ -74,7 +74,7 @@ void Fire2012(uint16_t numLEDs) {
   }
 }
 
-void fire2012(uint16_t numLEDs) {
+void fire2012(uint8_t numLEDs) {
   // Add entropy to random number generator; we use a lot of it.
   random16_add_entropy(random());
 

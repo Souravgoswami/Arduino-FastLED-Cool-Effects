@@ -1,4 +1,4 @@
-void sinusoidalBeats(uint16_t numLED) {
+void sinusoidalBeats(uint8_t numLED) {
   uint16_t sinBeatPos1 = beatsin16(30, 0, numLED - 1, 0, 0);
   uint16_t sinBeatPos2 = beatsin16(30, 0, numLED - 1, 0, 0);
 

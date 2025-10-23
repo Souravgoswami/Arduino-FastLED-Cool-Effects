@@ -1,4 +1,4 @@
-void sinusoidalBeats2(uint16_t numLED) {
+void sinusoidalBeats2(uint8_t numLED) {
   uint16_t sinBeatPos1 = beatsin16(30, 0, numLED - 1, 0, 0);
   uint16_t sinBeatPos2 = beatsin16(30, 0, numLED - 1, 0, 0);
 
@@ -14,7 +14,7 @@ void sinusoidalBeats2(uint16_t numLED) {
   );
 
   if(random8() < 50) { // Random chance to create a sparkle
-    uint16_t pos = random16(numLED); // Pick a random LED
+    uint8_t pos = random8(numLED); // Pick a random LED
     leds[pos] += CHSV(random8(), 200, 255); // Add a random color with high saturation and brightness
   }
 

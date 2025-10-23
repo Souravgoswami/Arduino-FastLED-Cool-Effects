@@ -3,7 +3,7 @@
 // by Mark Kriegsman
 // Minor Mods by Sourav Goswami (2021)
 
-void pride(uint16_t numLED) {
+void pride(uint8_t numLED) {
   uint8_t sat8, brightdepth, msmultiplier;
   uint16_t brightnessthetainc16;
   uint16_t hue16, hueinc16;
@@ -12,7 +12,6 @@ void pride(uint16_t numLED) {
   uint8_t bri8;
   uint8_t hue8;
   uint16_t brightnesstheta16;
-  uint16_t i;
 
   static uint32_t sPseudotime = 0;
   static uint32_t sLastMillis = 0;
@@ -33,7 +32,7 @@ void pride(uint16_t numLED) {
   sHue16 += deltams * beatsin88(400, 5, 9);
   brightnesstheta16 = sPseudotime;
 
-  for(i = 0; i < numLED; ++i) {
+  for(uint8_t i = 0; i < numLED; ++i) {
     hue16 += hueinc16;
     hue8 = hue16 >> 8;
 

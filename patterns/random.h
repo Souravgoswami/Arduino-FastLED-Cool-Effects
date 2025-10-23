@@ -33,7 +33,7 @@ void arrayShuffleUniqColoursEffect(const uint32_t *brightColours, uint8_t length
   FastLED.show();
 }
 
-void rotateBrightColours(uint32_t *ary, uint8_t length, uint16_t numLED) {
+void rotateBrightColours(uint32_t *ary, uint8_t length, uint8_t numLED) {
   uint8_t colIndex = 0;
 
   for(uint16_t i = 0; i < numLED; ++i) {
@@ -47,10 +47,10 @@ void rotateBrightColours(uint32_t *ary, uint8_t length, uint16_t numLED) {
   arrayRotate(ary, length);
 }
 
-void fadeBetweenColors(CRGB *fromColors, CRGB *toColors, uint8_t length, uint16_t numLEDs, uint16_t fadeDuration) {
+void fadeBetweenColors(CRGB *fromColors, CRGB *toColors, uint8_t length, uint8_t numLEDs, uint16_t fadeDuration) {
   constexpr uint8_t stepSize = 10;
 
-  for (int16_t step = 0; step <= 100; step += stepSize) {
+  for (uint8_t step = 0; step <= 100; step += stepSize) {
     for (uint8_t i = 0; i < numLEDs; ++i) {
       uint8_t fromIndex = i % length;
       CRGB fromColor = fromColors[fromIndex];
@@ -63,13 +63,14 @@ void fadeBetweenColors(CRGB *fromColors, CRGB *toColors, uint8_t length, uint16_
   }
 }
 
-void rotateBrightColoursSmooth(uint32_t *ary, uint8_t length, uint16_t numLED) {
+void rotateBrightColoursSmooth(uint32_t *ary, uint8_t length, uint8_t numLED) {
   CRGB toColours[numLED];
+
   uint8_t colIndex = 0;
   constexpr uint32_t fadeDurationFactor = 125000;
-  uint16_t fadeDuration = fadeDurationFactor / numLED;
+  uint32_t fadeDuration = fadeDurationFactor / numLED;
 
-  for(uint16_t i = 0; i < numLED; ++i) {
+  for(uint8_t i = 0; i < numLED; ++i) {
     toColours[i] = ary[colIndex];
     colIndex = (colIndex + 1) % length;
   }

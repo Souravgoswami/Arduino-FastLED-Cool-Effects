@@ -38,29 +38,29 @@ struct ColourSmashData {
 
 struct ColourSmashData colourSmashData;
 
-void runColourSmash(CRGBPalette16 palette, uint16_t numLED, int16_t everyNMilliseconds) {
+void runColourSmash(CRGBPalette16 palette, uint8_t numLED, int16_t everyNMilliseconds) {
   if (!colourSmashData.colourSmashInitialized) {
-    for (uint16_t i = 0; i < numLED; ++i) {
+    for (uint8_t i = 0; i < numLED; ++i) {
       colourSmashData.colourIndex[i] = generateRandomBrightColour();
     }
     colourSmashData.colourSmashInitialized = true;
   }
 
-  for (uint16_t i = 0; i < numLED; ++i) {
+  for (uint8_t i = 0; i < numLED; ++i) {
     leds[i] = ColorFromPalette(palette, colourSmashData.colourIndex[i], 0xff);
   }
 
   EVERY_N_MILLISECONDS(everyNMilliseconds) {
-    for (uint16_t i = 0; i < numLED; ++i) {
+    for (uint8_t i = 0; i < numLED; ++i) {
       colourSmashData.colourIndex[i] = (colourSmashData.colourIndex[i] + 1) % 256;
     }
   }
 }
 
-void colourSmash(uint16_t numLED) {
+void colourSmash(uint8_t numLED) {
   runColourSmash(colourSmashData.brightHeatMapColourSmash, numLED, 5);
 }
 
-void colourSmash2(uint16_t numLED) {
+void colourSmash2(uint8_t numLED) {
   runColourSmash(colourSmashData.brightHeatMapColourSmash2, numLED, 20);
 }

@@ -3,7 +3,7 @@ struct Cylon2Data {
   uint8_t baseHue = 0;
 } cylon2Data;
 
-void cylon(uint16_t numLEDs) {
+void cylon(uint8_t numLEDs) {
   static uint8_t hue = 0;
 
   for(uint8_t i = 0; i < numLEDs; ++i) {
@@ -29,7 +29,7 @@ void cylon(uint16_t numLEDs) {
   }
 }
 
-void cylon2(uint16_t numLEDs) {
+void cylon2(uint8_t numLEDs) {
   for (uint8_t i = 0; i < numLEDs; ++i) {
     // Light up the current LED with maximum brightness
     cylon2Data.brightness[i] = 255;

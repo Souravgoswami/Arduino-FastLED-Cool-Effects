@@ -9,31 +9,31 @@ DemoReel100Data demoReel100Data;
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 
-void rainbow(uint16_t numLEDs) {
+void rainbow(uint8_t numLEDs) {
   // FastLED's built-in rainbow generator
   fill_rainbow(leds, numLEDs, demoReel100Data.gHue, 7);
 }
 
-void addGlitter(fract8 chanceOfGlitter, uint16_t numLEDs) {
+void addGlitter(fract8 chanceOfGlitter, uint8_t numLEDs) {
   if( random8() < chanceOfGlitter) {
-    leds[random16(numLEDs)] += CRGB::White;
+    leds[random8(numLEDs)] += CRGB::White;
   }
 }
 
-void rainbowWithGlitter(uint16_t numLEDs) {
+void rainbowWithGlitter(uint8_t numLEDs) {
   // built-in FastLED rainbow, plus some random sparkly glitter
   rainbow(numLEDs);
   addGlitter(80, numLEDs);
 }
 
-void confetti(uint16_t numLEDs) {
+void confetti(uint8_t numLEDs) {
   // random colored speckles that blink in and fade smoothly
   fadeToBlackBy( leds, numLEDs, 10);
-  uint16_t pos = random16(numLEDs);
+  uint16_t pos = random8(numLEDs);
   leds[pos] += CHSV( demoReel100Data.gHue + random8(64), 200, 255);
 }
 
-void juggle(uint16_t numLEDs) {
+void juggle(uint8_t numLEDs) {
   // eight colored dots, weaving in and out of sync with each other
   fadeToBlackBy(leds, numLEDs, 20);
   uint8_t dothue = 0;
@@ -43,7 +43,7 @@ void juggle(uint16_t numLEDs) {
   }
 }
 
-typedef void (*SimplePatternList[])(uint16_t numLED);
+typedef void (*SimplePatternList[])(uint8_t numLED);
 SimplePatternList gPatterns = { rainbow, rainbowWithGlitter, confetti, juggle };
 
 void nextPattern() {
@@ -51,7 +51,7 @@ void nextPattern() {
   demoReel100Data.gCurrentPatternNumber = (demoReel100Data.gCurrentPatternNumber + 1) % ARRAY_SIZE(gPatterns);
 }
 
-void demoReel100(uint16_t numLED) {
+void demoReel100(uint8_t numLED) {
   gPatterns[demoReel100Data.gCurrentPatternNumber](numLED);
   FastLED.show();
 

@@ -14,8 +14,8 @@ RainbowChasersGroup groups[3] = {
 // Timing and fading parameters
 struct RainbowChasersData {
   uint32_t lastUpdateTime = 0;
-  const uint8_t updateInterval = 14; // Milliseconds between updates for smooth transition
-  const uint8_t fadeAmount = 5; // Adjust for faster or slower fade
+  const uint8_t updateInterval = 2; // Milliseconds between updates for smooth transition
+  const uint8_t fadeAmount = 3; // Adjust for faster or slower fade
   uint8_t hueOffset = 0; // Starting offset color
 };
 
@@ -43,11 +43,8 @@ void updateRainbowChasersGroupState(RainbowChasersGroup &group) {
   }
 }
 
-void staticRainbowChase(CRGB* leds, uint16_t numLEDs) {
-  uint32_t currentTime = millis();
-  if (currentTime - rainbowChasersData.lastUpdateTime > rainbowChasersData.updateInterval) {
-    rainbowChasersData.lastUpdateTime = currentTime;
-
+void staticRainbowChase(CRGB* leds, uint8_t numLEDs) {
+  EVERY_N_MILLISECONDS(rainbowChasersData.updateInterval) {
     // Update each group's state and brightness
     for (uint8_t i = 0; i < 3; i++) {
       updateRainbowChasersGroupState(groups[i]);
@@ -67,11 +64,11 @@ void staticRainbowChase(CRGB* leds, uint16_t numLEDs) {
 
     // Apply the brightness and color to the LEDs
     for (uint8_t i = 0; i < numLEDs; i++) {
-      uint8_t groupIndex = i % 3; // Determine the group of the current LED
+      const uint8_t groupIndex = i % 3; // Determine the group of the current LED
 
       // Calculate a static hue value for each LED to create a stationary rainbow pattern across the LED strip.
       // Assign the calculated hue with full saturation and group-specific brightness to the LED.
-      uint8_t hue = ((i * 255) / numLEDs);
+      const uint8_t hue = rainbowChasersData.hueOffset + scale8(i * 256 / numLEDs, 255);
       CHSV hsvColor = CHSV(hue, 255, groups[groupIndex].brightness);
       leds[i] = hsvColor;
     }
@@ -80,13 +77,10 @@ void staticRainbowChase(CRGB* leds, uint16_t numLEDs) {
   }
 }
 
-void dynamicRainbowChase(CRGB* leds, uint16_t numLEDs) {
-  uint32_t currentTime = millis();
-  if (currentTime - rainbowChasersData.lastUpdateTime > rainbowChasersData.updateInterval) {
-    rainbowChasersData.lastUpdateTime = currentTime;
-
+void dynamicRainbowChase(CRGB* leds, uint8_t numLEDs) {
+  EVERY_N_MILLISECONDS(rainbowChasersData.updateInterval) {
     // Update each group's state and brightness
-    for (uint16_t i = 0; i < 3; i++) {
+    for (uint8_t i = 0; i < 3; i++) {
       updateRainbowChasersGroupState(groups[i]);
     }
 
@@ -106,11 +100,11 @@ void dynamicRainbowChase(CRGB* leds, uint16_t numLEDs) {
 
     // Apply the brightness and color to the LEDs
     for (uint8_t i = 0; i < numLEDs; i++) {
-      uint16_t groupIndex = i % 3; // Determine the group of the current LED
+      const uint8_t groupIndex = i % 3; // Determine the group of the current LED
 
     // Calculate hue for each LED with an offset for creating a moving rainbow effect across the LED strip.
     // Assign the calculated hue with full saturation and group-specific brightness to the LED.
-      uint8_t hue = rainbowChasersData.hueOffset + i * 255 / numLEDs;
+      const uint8_t hue = rainbowChasersData.hueOffset + scale8(i * 256 / numLEDs, 255);
       CHSV hsvColor = CHSV(hue, 255, groups[groupIndex].brightness);
       leds[i] = hsvColor;
     }

@@ -6,7 +6,7 @@ struct MetorRainData {
   static constexpr bool meteorRandomDecay = true;
 };
 
-void meteorRain(uint32_t colour, uint16_t numLED) {
+void meteorRain(uint32_t colour, uint8_t numLED) {
   uint16_t meteorSize = max(static_cast<int16_t>(1), static_cast<int16_t>(numLED * MetorRainData::meteorSizeFactor));
   uint8_t meteorTrailDecay = max(static_cast<int16_t>(1), static_cast<int16_t>(255 * MetorRainData::meteorTrailDecayFactor));
   uint16_t meteorTrailLength = max(static_cast<int16_t>(1), static_cast<int16_t>(numLED * MetorRainData::meteorTrailLengthFactor));
@@ -17,7 +17,9 @@ void meteorRain(uint32_t colour, uint16_t numLED) {
 
   FastLED.clear();
 
-  for (uint16_t i = 0; i < numLED + meteorTrailLength; ++i) {
+  for (uint8_t i = 0; i < numLED + meteorTrailLength; ++i) {
+    if (ledData.modeButtonPressed || ledData.ledChainToggleButtonPressed) return;
+
     // Draw the meteor
     for (uint16_t j = 0; j < meteorSize; ++j) {
       if (i - j < numLED) {
@@ -26,7 +28,7 @@ void meteorRain(uint32_t colour, uint16_t numLED) {
     }
 
     // Draw the tail
-    for (uint16_t j = 0; j < numLED; ++j) {
+    for (uint8_t j = 0; j < numLED; ++j) {
       if (MetorRainData::meteorRandomDecay && (random(10) > 3)) {
         leds[j].fadeToBlackBy(meteorTrailDecay);
       }

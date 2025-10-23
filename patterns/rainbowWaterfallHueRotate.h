@@ -1,5 +1,5 @@
 // Function to create a moving rainbow effect with varying brightness like a waterfall
-void rainbowWaterfallHueRotate(uint8_t waveLength, uint8_t speed, uint16_t numLEDs) {
+void rainbowWaterfallHueRotate(uint8_t waveLength, uint8_t speed, uint8_t numLEDs) {
   static int16_t position = 0; // Static variable to hold the current position of the wave
 
   // Loop through each LED to set its color and brightness
@@ -26,7 +26,7 @@ void rainbowWaterfallHueRotate(uint8_t waveLength, uint8_t speed, uint16_t numLE
 }
 
 // Function to create a moving rainbow effect with varying brightness like a waterfall in reverse direction
-void reverseRainbowWaterfallHueRotate(uint8_t waveLength, uint8_t speed, uint16_t numLEDs) {
+void reverseRainbowWaterfallHueRotate(uint8_t waveLength, uint8_t speed, uint8_t numLEDs) {
   static int16_t position = 0; // Static variable to hold the current position of the wave
 
   // Loop through each LED to set its color and brightness
