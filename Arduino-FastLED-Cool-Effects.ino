@@ -464,17 +464,17 @@ void loop() {
 
   if (selectedDesign == 0) {
     rotatingRainbowHue(totalLEDCount);
-    FastLED.delay(5);
     FastLED.show();
+    FastLED.delay(5);
   } else if (selectedDesign == 1) {
     rotatingRainbowHueSegmented(totalLEDCount, totalLEDCount / 4);
-    FastLED.delay(5);
     FastLED.show();
+    FastLED.delay(5);
   } else if (selectedDesign == 2) {
     rotatingRainbowHue(totalLEDCount);
     addGlitter(50, totalLEDCount);
-    FastLED.delay(5);
     FastLED.show();
+    FastLED.delay(5);
   } else if (selectedDesign == 3) {
     rainbowFirework(totalLEDCount);
   } else if (selectedDesign == 4) {
