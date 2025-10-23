@@ -574,7 +574,7 @@ void loop() {
   } else if (selectedDesign == 35) {
     pride(totalLEDCount);
   } else if (selectedDesign == 36) {
-    pride(totalLEDCount);
+    cylon(totalLEDCount);
   } else if (selectedDesign == 37) {
     cylon2(totalLEDCount);
   } else if (selectedDesign == 38) {
