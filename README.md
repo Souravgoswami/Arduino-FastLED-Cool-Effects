@@ -1,23 +1,33 @@
 # Arduino-FastLED-Cool-Effects
-Combines cool FastLED effects of arduino, that's available by clicking the interrupt button.
 
-This code tested on both an Arduino Uno and Arduino Nano.
+A collection of cool FastLED effects for Arduino boards, triggered by pressing the interrupt button.
 
-# Setup:
-To setup, you need the following parts:
-1. 1xArduino Uno / Nano.
-2. A chain of WS2811 fully addressable RGB LED. You can tweak the number in the Code.
-3. Some wires.
-4. 1x10KΩ Resistor.
-5. A momentary push button.
+Supported boards: **Arduino** and **STM32F103C8**.
+**ESP8266** also works, though you might notice occasional glitches.
 
-You then need to connect the parts in the following way:
+### Tested setups
+
+* **Arduino Uno / Nano:** FastLED v3.10.3
+* **STM32F103C8T6:** Board package v2.11.0, FastLED v3.10.2
+  *(Note: FastLED v3.10.3 doesn't work properly on STM32F103C8T6.)*
+
+FastLED tends to be a bit unstable on ESP8266, and you may encounter random glitches even when using proper logic-level shifters.
+
+---
+
+## Setup
+
+Connect the components as shown below (for Arduino):
 
 ![WS2811](https://raw.githubusercontent.com/Souravgoswami/Arduino-FastLED-Cool-Effects/master/images/circuit.jpg)
 
-To change any configuration, modify the userConfig.h file.
-To change board from Arduino to ESP8266 or D1 mini, modify the board.h file.
+For **STM32F103C8**, you'll need a logic-level shifter to convert 3.3 V signals to 5 V.
+I've tested the **SN74LV1T34DBVR**, which works great. Other high-speed shifters like **TXB0108** also do the job.
 
-To change LED modes, press the momentary switch button!
+To adjust settings, edit **userConfig.h**.
+To switch boards (Arduino / STM32F103C8T6 / ESP8266 based boards), open **boardConfig.h** and uncomment your target board.
 
-You can use a different external power supply for the LED, while the arduino runs on another. In that case, the + and - will connect to the external power supply, and the ground (-) should be attached to the arduino ground \[the + should only go to the LED, it shouldn't touch the arudino].
+Press the **momentary switch button** to change LED modes!
+
+If you're using a separate power supply for the LEDs, connect **+** and **–** to that supply, and make sure the **grounds (–)** of both the LED supply and the Arduino are connected together (common ground).
+The **+** line from the LED power supply should **not** be connected to the Arduino.

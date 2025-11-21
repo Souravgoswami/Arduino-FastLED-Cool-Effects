@@ -7,7 +7,8 @@ void rainbow2(uint8_t numLED, uint16_t turnOffNum) {
   // Update the rainbow for LEDs not marked for fading
   for (uint8_t i = 0; i < numLED; ++i) {
     if (!rainbowData.fadeOutFlags[i]) {
-      leds[i] = ColorFromPalette(RainbowColors_p, rainbowData.startHue + i * 7, 255, LINEARBLEND);
+      CRGBPalette16 rainbowColors = RainbowColors_p;
+      leds[i] = ColorFromPalette(rainbowColors, rainbowData.startHue + i * 7, 255, LINEARBLEND);
     }
   }
 

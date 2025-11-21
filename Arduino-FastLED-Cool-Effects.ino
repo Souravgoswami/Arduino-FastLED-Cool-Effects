@@ -4,14 +4,20 @@
 
 #include <Arduino.h>
 #include <EEPROM.h>
-#include "board.h"
+#include "boardConfig.h"
 
-#if !defined(BOARD_ESP8266) && !defined(BOARD_ARDUINO)
+#if !defined(BOARD_ESP8266) && !defined(BOARD_ARDUINO) && !defined(BOARD_STM32F103C8)
   #warning "Neither BOARD_ESP8266 nor BOARD_ARDUINO is defined. Using Arduino by default"
   #define BOARD_ARDUINO
 #endif
 
-#include <FastLED.h>
+#ifndef min
+  #define min(a,b) ((a)<(b)?(a):(b))
+#endif
+
+#include "FastLED.h"
+
+using namespace fl;
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3001000)
   #warning "Requires FastLED 3.1 or later; check github for latest code."

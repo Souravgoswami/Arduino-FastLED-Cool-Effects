@@ -18,6 +18,8 @@
   #define DATA_PIN 14
 #elif defined(BOARD_ARDUINO)
   #define DATA_PIN 5
+#elif defined(BOARD_STM32F103C8)
+  #define DATA_PIN PA7
 #endif
 
 
@@ -47,6 +49,8 @@
 // - Generic ESP8266 boards: Connect the button to GPIO 5 and define DESIGN_BUTTON_PIN as 5.
 #if defined(BOARD_ARDUINO)
   #define DESIGN_BUTTON_PIN 2
+#elif defined(BOARD_STM32F103C8)
+  #define DESIGN_BUTTON_PIN PB8
 #elif defined(BOARD_ESP8266)
   #define DESIGN_BUTTON_PIN 5
 #endif
@@ -70,6 +74,8 @@
 // - Generic ESP8266 boards: Connect the indicator LED to GPIO 12 and set BUTTON_DESIGN_LED_INDICATOR_PIN to 12.
 #if defined(BOARD_ARDUINO)
   #define BUTTON_DESIGN_LED_INDICATOR_PIN 8
+#elif defined(BOARD_STM32F103C8)
+  #define BUTTON_DESIGN_LED_INDICATOR_PIN PC13
 #elif defined(BOARD_ESP8266)
   #define BUTTON_DESIGN_LED_INDICATOR_PIN 12
 #endif
@@ -98,6 +104,8 @@
   // - Generic ESP8266 boards: Connect the LED chain toggle button to GPIO 4 and define LED_CHAIN_TOGGLE_BUTTON_PIN as 4.
   #if defined(BOARD_ARDUINO)
     #define LED_CHAIN_TOGGLE_BUTTON_PIN 3
+  #elif defined(BOARD_STM32F103C8)
+    #define LED_CHAIN_TOGGLE_BUTTON_PIN PB9
   #elif defined(BOARD_ESP8266)
     #define LED_CHAIN_TOGGLE_BUTTON_PIN 4
   #endif
@@ -113,6 +121,8 @@
   // On bare ESP8266, set BUTTON_DESIGN_LED_INDICATOR_PIN to 13, connect LED to GPIO 13
   #if defined(BOARD_ARDUINO)
     #define CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN 7
+  #elif defined(BOARD_STM32F103C8)
+    #define CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN PA8
   #elif defined(BOARD_ESP8266)
     #define CHAIN_TOGGLE_BUTTON_LED_INDICATOR_PIN 13
   #endif

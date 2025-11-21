@@ -47,7 +47,8 @@ void runColourSmash(CRGBPalette16 palette, uint8_t numLED, int16_t everyNMillise
   }
 
   for (uint8_t i = 0; i < numLED; ++i) {
-    leds[i] = ColorFromPalette(palette, colourSmashData.colourIndex[i], 0xff);
+    CRGBPalette16 pal = palette;
+    leds[i] = ColorFromPalette(pal, colourSmashData.colourIndex[i], 0xff);
   }
 
   EVERY_N_MILLISECONDS(everyNMilliseconds) {

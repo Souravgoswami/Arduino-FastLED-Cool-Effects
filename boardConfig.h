@@ -1,5 +1,6 @@
 #define BOARD_ARDUINO
 // #define BOARD_ESP8266
+// #define BOARD_STM32F103C8
 
 // IMPORTANT NOTE regarding the use of FASTLED_ALL_PINS_HARDWARE_SPI:
 //
